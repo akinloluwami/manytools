@@ -1,39 +1,27 @@
-import { createFileRoute } from '@tanstack/react-router'
-import logo from '../logo.svg'
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: App,
-})
+});
 
 function App() {
   return (
-    <div className="text-center">
-      <header className="min-h-screen flex flex-col items-center justify-center bg-[#282c34] text-white text-[calc(10px+2vmin)]">
-        <img
-          src={logo}
-          className="h-[40vmin] pointer-events-none animate-[spin_20s_linear_infinite]"
-          alt="logo"
-        />
-        <p>
-          Edit <code>src/routes/index.tsx</code> and save to reload.
+    <div className="max-w-7xl mx-auto p-10">
+      <div className="flex items-center justify-between">
+        <p className="text-2xl font-bold text-gray-800">
+          ManyTools{" "}
+          <span className="px-2 py-1 rounded-full bg-purple-500/10 text-purple-500 border border-purple-500 text-xs">
+            v0.1
+          </span>{" "}
         </p>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <a
-          className="text-[#61dafb] hover:underline"
-          href="https://tanstack.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn TanStack
-        </a>
-      </header>
+      </div>
+      <div className="mt-10 flex items-center justify-between">
+        <p className="text-gray-600 text-xs font-semibold">
+          A growing collection of essential design, development, and everyday
+          tools — all in one place.
+        </p>
+        <div className=""></div>
+      </div>
     </div>
-  )
+  );
 }
