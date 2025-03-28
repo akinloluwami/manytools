@@ -11,9 +11,16 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as ImagePaletteGeneratorImport } from './routes/image-palette-generator'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const ImagePaletteGeneratorRoute = ImagePaletteGeneratorImport.update({
+  id: '/image-palette-generator',
+  path: '/image-palette-generator',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -32,6 +39,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/image-palette-generator': {
+      id: '/image-palette-generator'
+      path: '/image-palette-generator'
+      fullPath: '/image-palette-generator'
+      preLoaderRoute: typeof ImagePaletteGeneratorImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +53,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/image-palette-generator': typeof ImagePaletteGeneratorRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/image-palette-generator': typeof ImagePaletteGeneratorRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/image-palette-generator': typeof ImagePaletteGeneratorRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/image-palette-generator'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/image-palette-generator'
+  id: '__root__' | '/' | '/image-palette-generator'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ImagePaletteGeneratorRoute: typeof ImagePaletteGeneratorRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ImagePaletteGeneratorRoute: ImagePaletteGeneratorRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/image-palette-generator"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/image-palette-generator": {
+      "filePath": "image-palette-generator.tsx"
     }
   }
 }
