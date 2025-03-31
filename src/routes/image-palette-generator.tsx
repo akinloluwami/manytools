@@ -6,11 +6,13 @@ import {
   Loader2Icon,
   ChevronDown,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useDropzone } from "react-dropzone";
 import { AnimatePresence, motion } from "motion/react";
-//@ts-ignore
+// @ts-ignore
 import ColorThief from "colorthief";
+import Modal from "@/components/modal";
+import { convertHexColorCode } from "@/utils/convert-hex-color-code";
 
 export const Route = createFileRoute("/image-palette-generator")({
   component: RouteComponent,
@@ -21,10 +23,54 @@ function RouteComponent() {
   const [colors, setColors] = useState<string[]>([]);
   const [fullPalette, setFullPalette] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
 
-  const onDrop = (acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    if (file) {
+  const extractColors = useCallback(
+    (src: string) => {
+      if (loading) return;
+
+      setLoading(true);
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.src = src;
+
+      img.onload = () => {
+        try {
+          const colorThief = new ColorThief();
+          const palette = colorThief.getPalette(img, 10) as [
+            number,
+            number,
+            number,
+          ][];
+          const hexColors = palette.map(
+            ([r, g, b]) =>
+              `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
+          );
+          setFullPalette(hexColors);
+          setColors(hexColors.slice(0, 6));
+        } catch (err) {
+          console.error("Failed to extract palette:", err);
+          setFullPalette([]);
+          setColors([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      img.onerror = () => {
+        console.error("Image failed to load.");
+        setLoading(false);
+      };
+    },
+    [loading]
+  );
+
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      const file = acceptedFiles[0];
+      if (!file) return;
+
       const reader = new FileReader();
       reader.onload = () => {
         const result = reader.result as string;
@@ -32,26 +78,9 @@ function RouteComponent() {
         extractColors(result);
       };
       reader.readAsDataURL(file);
-    }
-  };
-
-  const extractColors = (src: string) => {
-    setLoading(true);
-    const img = new Image();
-    img.crossOrigin = "Anonymous";
-    img.src = src;
-    img.onload = () => {
-      const colorThief = new ColorThief();
-      const palette = colorThief.getPalette(img, 10);
-      const hexColors = palette.map(
-        ([r, g, b]: number[]) =>
-          `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
-      );
-      setFullPalette(hexColors);
-      setColors(hexColors.slice(0, 6));
-      setLoading(false);
-    };
-  };
+    },
+    [extractColors]
+  );
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -61,12 +90,39 @@ function RouteComponent() {
 
   const addNewColor = () => {
     if (colors.length < fullPalette.length) {
-      setColors([...colors, fullPalette[colors.length]]);
+      setColors((prev) => [...prev, fullPalette[prev.length]]);
     }
   };
 
+  const convertedColor = useMemo(() => {
+    if (!isModalOpen || !selectedColor) return null;
+    if (!/^#[0-9A-Fa-f]{6}$/.test(selectedColor)) return null;
+
+    return convertHexColorCode(selectedColor);
+  }, [isModalOpen, selectedColor]);
+
   return (
     <>
+      <Modal
+        isOpen={isModalOpen && !!selectedColor}
+        onClose={() => setIsModalOpen(false)}
+        title="Detailed view"
+      >
+        <div className="space-y-4">
+          {convertedColor &&
+            Object.entries(convertedColor).map(([key, value]) => (
+              <div
+                key={key}
+                className="w-full h-12 rounded-lg flex items-center justify-between px-4 uppercase"
+                style={{ backgroundColor: selectedColor! }}
+              >
+                <p>{key}</p>
+                <p>{value}</p>
+              </div>
+            ))}
+        </div>
+      </Modal>
+
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-x-6">
           <Link to="/">
@@ -77,6 +133,7 @@ function RouteComponent() {
           </p>
         </div>
       </div>
+
       <div className="mt-20 flex gap-x-10">
         <div className="w-[60%]">
           <div
@@ -89,6 +146,7 @@ function RouteComponent() {
                   e.stopPropagation();
                   setImage(null);
                   setColors([]);
+                  setFullPalette([]);
                 }}
                 className="absolute top-4 right-4"
               >
@@ -111,6 +169,7 @@ function RouteComponent() {
             )}
           </div>
         </div>
+
         <div className="w-[40%]">
           <div className="flex flex-col gap-y-4">
             <div className="flex items-center justify-between">
@@ -134,6 +193,10 @@ function RouteComponent() {
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
                     className="w-full h-12 bg-gray-100 rounded-lg flex items-center justify-between px-4"
+                    onClick={() => {
+                      setIsModalOpen(true);
+                      setSelectedColor(color);
+                    }}
                   >
                     <div
                       className="w-8 h-8 rounded-full"
