@@ -4,3 +4,7 @@
 body {
   font-family: "Geist Mono", monospace;
 }
+
+button {
+  cursor: pointer;
+}
