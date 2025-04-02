@@ -21,6 +21,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.8",
+    "react-tooltip": "^5.28.0",
     "tailwindcss": "^4.0.6"
   },
   "devDependencies": {
