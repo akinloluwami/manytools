@@ -18,6 +18,13 @@ import { Tooltip } from "react-tooltip";
 
 export const Route = createFileRoute("/image-palette-generator")({
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      {
+        title: "Image Palette Generator - ManyTools",
+      },
+    ],
+  }),
 });
 
 function RouteComponent() {
