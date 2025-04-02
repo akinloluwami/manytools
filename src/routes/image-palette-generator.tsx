@@ -13,6 +13,8 @@ import { AnimatePresence, motion } from "motion/react";
 import ColorThief from "colorthief";
 import Modal from "@/components/modal";
 import { convertHexColorCode } from "@/utils/convert-hex-color-code";
+import { getLuminosity } from "@/utils/get-luminosity";
+import { Tooltip } from "react-tooltip";
 
 export const Route = createFileRoute("/image-palette-generator")({
   component: RouteComponent,
@@ -101,6 +103,9 @@ function RouteComponent() {
     return convertHexColorCode(selectedColor);
   }, [isModalOpen, selectedColor]);
 
+  const textColor =
+    getLuminosity(selectedColor || "") > 0.5 ? "black" : "white";
+
   return (
     <>
       <Modal
@@ -108,13 +113,17 @@ function RouteComponent() {
         onClose={() => setIsModalOpen(false)}
         title="Detailed view"
       >
+        <Tooltip id="tooltip" />
+
         <div className="space-y-4">
           {convertedColor &&
             Object.entries(convertedColor).map(([key, value]) => (
               <div
                 key={key}
                 className="w-full h-12 rounded-lg flex items-center justify-between px-4 uppercase"
-                style={{ backgroundColor: selectedColor! }}
+                style={{ backgroundColor: selectedColor!, color: textColor }}
+                data-tooltip-id="tooltip"
+                data-tooltip-content="Copy"
               >
                 <p>{key}</p>
                 <p>{value}</p>
@@ -122,7 +131,6 @@ function RouteComponent() {
             ))}
         </div>
       </Modal>
-
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-x-6">
           <Link to="/">
@@ -175,14 +183,21 @@ function RouteComponent() {
             <div className="flex items-center justify-between">
               <p className="text-2xl font-bold text-gray-800">Palette</p>
               <div className="flex gap-x-[1px]">
-                <button className="bg-purple-500 text-white px-4 py-2 rounded-l-lg cursor-pointer">
+                <button
+                  className="bg-purple-500 text-white px-4 py-2 rounded-l-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={colors.length === 0}
+                >
                   Export palette
                 </button>
-                <button className="bg-purple-500 text-white px-2 py-2 rounded-r-lg cursor-pointer">
+                <button
+                  className="bg-purple-500 text-white px-2 py-2 rounded-r-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={colors.length === 0}
+                >
                   <ChevronDown />
                 </button>
               </div>
             </div>
+
             <div className="flex flex-col gap-y-4">
               <AnimatePresence>
                 {colors.map((color) => (
