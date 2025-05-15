@@ -1,6 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import {
-  ArrowLeftIcon,
   PlusIcon,
   X,
   Loader2Icon,
@@ -11,10 +10,11 @@ import { useDropzone } from "react-dropzone";
 import { AnimatePresence, motion } from "motion/react";
 // @ts-ignore
 import ColorThief from "colorthief";
-import Modal from "@/components/modal";
+import Modal from "@/components/shared/modal";
 import { convertHexColorCode } from "@/utils/convert-hex-color-code";
 import { getLuminosity } from "@/utils/get-luminosity";
 import { Tooltip } from "react-tooltip";
+import ContentLayout from "@/components/shared/content-layout";
 
 export const Route = createFileRoute("/image-palette-generator")({
   component: RouteComponent,
@@ -138,111 +138,105 @@ function RouteComponent() {
             ))}
         </div>
       </Modal>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-x-6">
-          <Link to="/">
-            <ArrowLeftIcon size={20} />
-          </Link>
-          <p className="text-2xl font-bold text-gray-800">
-            Image Palette Generator
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-20 flex gap-x-10">
-        <div className="w-[60%]">
-          <div
-            {...getRootProps()}
-            className="w-full border border-purple-500 border-dotted h-[70vh] rounded-2xl bg-purple-50 flex items-center justify-center cursor-pointer relative"
-          >
-            {image && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setImage(null);
-                  setColors([]);
-                  setFullPalette([]);
-                }}
-                className="absolute top-4 right-4"
-              >
-                <X size={20} />
-              </button>
-            )}
-            <input {...getInputProps()} />
-            {loading ? (
-              <Loader2Icon className="animate-spin text-purple-500" size={40} />
-            ) : image ? (
-              <img
-                src={image}
-                alt="Uploaded Preview"
-                className="max-h-full max-w-full rounded-2xl"
-              />
-            ) : (
-              <p className="text-gray-500 text-2xl">
-                Drop an image here or click to upload
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div className="w-[40%]">
-          <div className="flex flex-col gap-y-4">
-            <div className="flex items-center justify-between">
-              <p className="text-2xl font-bold text-gray-800">Palette</p>
-              <div className="flex gap-x-[1px]">
+      <ContentLayout title="Image Palette Generator">
+        <div className="mt-20 flex gap-x-10">
+          <div className="w-[60%]">
+            <div
+              {...getRootProps()}
+              className="w-full border border-purple-500 border-dotted h-[70vh] rounded-2xl bg-purple-50 flex items-center justify-center cursor-pointer relative"
+            >
+              {image && (
                 <button
-                  className="bg-purple-500 text-white px-4 py-2 rounded-l-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={colors.length === 0}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setImage(null);
+                    setColors([]);
+                    setFullPalette([]);
+                  }}
+                  className="absolute top-4 right-4"
                 >
-                  Export palette
+                  <X size={20} />
                 </button>
-                <button
-                  className="bg-purple-500 text-white px-2 py-2 rounded-r-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={colors.length === 0}
-                >
-                  <ChevronDown />
-                </button>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-y-4">
-              <AnimatePresence>
-                {colors.map((color) => (
-                  <motion.div
-                    key={color}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
-                    className="w-full h-12 bg-gray-100 rounded-lg flex items-center justify-between px-4"
-                    onClick={() => {
-                      setIsModalOpen(true);
-                      setSelectedColor(color);
-                    }}
-                  >
-                    <div
-                      className="w-8 h-8 rounded-full"
-                      style={{ backgroundColor: color }}
-                    ></div>
-                    <p className="text-gray-800">{color}</p>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-              {!!image && (
-                <button
-                  className="text-sm text-purple-500 flex items-center gap-x-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                  onClick={addNewColor}
-                  disabled={
-                    colors.length >= fullPalette.length || loading || !image
-                  }
-                >
-                  <PlusIcon size={16} /> Add Color
-                </button>
+              )}
+              <input {...getInputProps()} />
+              {loading ? (
+                <Loader2Icon
+                  className="animate-spin text-purple-500"
+                  size={40}
+                />
+              ) : image ? (
+                <img
+                  src={image}
+                  alt="Uploaded Preview"
+                  className="max-h-full max-w-full rounded-2xl"
+                />
+              ) : (
+                <p className="text-gray-500 text-2xl">
+                  Drop an image here or click to upload
+                </p>
               )}
             </div>
           </div>
+
+          <div className="w-[40%]">
+            <div className="flex flex-col gap-y-4">
+              <div className="flex items-center justify-between">
+                <p className="text-2xl font-bold text-gray-800">Palette</p>
+                <div className="flex gap-x-[1px]">
+                  <button
+                    className="bg-purple-500 text-white px-4 py-2 rounded-l-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={colors.length === 0}
+                  >
+                    Export palette
+                  </button>
+                  <button
+                    className="bg-purple-500 text-white px-2 py-2 rounded-r-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={colors.length === 0}
+                  >
+                    <ChevronDown />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-y-4">
+                <AnimatePresence>
+                  {colors.map((color) => (
+                    <motion.div
+                      key={color}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                      className="w-full h-12 bg-gray-100 rounded-lg flex items-center justify-between px-4"
+                      onClick={() => {
+                        setIsModalOpen(true);
+                        setSelectedColor(color);
+                      }}
+                    >
+                      <div
+                        className="w-8 h-8 rounded-full"
+                        style={{ backgroundColor: color }}
+                      ></div>
+                      <p className="text-gray-800">{color}</p>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+                {!!image && (
+                  <button
+                    className="text-sm text-purple-500 flex items-center gap-x-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                    onClick={addNewColor}
+                    disabled={
+                      colors.length >= fullPalette.length || loading || !image
+                    }
+                  >
+                    <PlusIcon size={16} /> Add Color
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </ContentLayout>
     </>
   );
 }

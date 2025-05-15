@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as ImagePaletteGeneratorImport } from './routes/image-palette-generator'
+import { Route as ImageCompressorImport } from './routes/image-compressor'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
@@ -19,6 +20,12 @@ import { Route as IndexImport } from './routes/index'
 const ImagePaletteGeneratorRoute = ImagePaletteGeneratorImport.update({
   id: '/image-palette-generator',
   path: '/image-palette-generator',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ImageCompressorRoute = ImageCompressorImport.update({
+  id: '/image-compressor',
+  path: '/image-compressor',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,6 +46,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/image-compressor': {
+      id: '/image-compressor'
+      path: '/image-compressor'
+      fullPath: '/image-compressor'
+      preLoaderRoute: typeof ImageCompressorImport
+      parentRoute: typeof rootRoute
+    }
     '/image-palette-generator': {
       id: '/image-palette-generator'
       path: '/image-palette-generator'
@@ -53,36 +67,41 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/image-compressor': typeof ImageCompressorRoute
   '/image-palette-generator': typeof ImagePaletteGeneratorRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/image-compressor': typeof ImageCompressorRoute
   '/image-palette-generator': typeof ImagePaletteGeneratorRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/image-compressor': typeof ImageCompressorRoute
   '/image-palette-generator': typeof ImagePaletteGeneratorRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/image-palette-generator'
+  fullPaths: '/' | '/image-compressor' | '/image-palette-generator'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/image-palette-generator'
-  id: '__root__' | '/' | '/image-palette-generator'
+  to: '/' | '/image-compressor' | '/image-palette-generator'
+  id: '__root__' | '/' | '/image-compressor' | '/image-palette-generator'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ImageCompressorRoute: typeof ImageCompressorRoute
   ImagePaletteGeneratorRoute: typeof ImagePaletteGeneratorRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ImageCompressorRoute: ImageCompressorRoute,
   ImagePaletteGeneratorRoute: ImagePaletteGeneratorRoute,
 }
 
@@ -97,11 +116,15 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/image-compressor",
         "/image-palette-generator"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/image-compressor": {
+      "filePath": "image-compressor.tsx"
     },
     "/image-palette-generator": {
       "filePath": "image-palette-generator.tsx"
