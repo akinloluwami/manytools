@@ -35,6 +35,13 @@ function RouteComponent() {
     if (!acceptedFiles) return;
     const file = acceptedFiles[0];
     if (!file) return;
+    
+    const MAX_FILE_SIZE = 200 * 1024 * 1024; 
+    if (file.size > MAX_FILE_SIZE) {
+      alert("File is too large. Please select an image smaller than 200MB.");
+      return;
+    }
+    
     setOriginalSize(file.size);
     setUploadLoading(true);
 
@@ -43,6 +50,10 @@ function RouteComponent() {
       if (!event?.target?.result) return alert("An Error Occurred");
       setImage(event.target.result as string);
       setCompressedImage(null!);
+      setUploadLoading(false);
+    };
+    reader.onerror = () => {
+      alert("Failed to read file. The image might be too large or corrupted.");
       setUploadLoading(false);
     };
     reader.readAsDataURL(file);
@@ -62,6 +73,16 @@ function RouteComponent() {
       alert("Please select an image file");
       return;
     }
+    
+
+    const MAX_FILE_SIZE = 200 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      alert("File is too large. Please select an image smaller than 200MB.");
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      return;
+    }
 
     setOriginalSize(file.size);
     setUploadLoading(true);
@@ -73,6 +94,13 @@ function RouteComponent() {
       setCompressedImage(null!);
       setUploadLoading(false);
     };
+    reader.onerror = () => {
+      alert("Failed to read file. The image might be too large or corrupted.");
+      setUploadLoading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    };
     reader.readAsDataURL(file);
   };
 
@@ -83,38 +111,62 @@ function RouteComponent() {
 
     const img = new Image();
     img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
+      try {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
 
-      if (!ctx) return alert("Your broser does not support this feature.");
+        if (!ctx) {
+          alert("Your browser does not support this feature.");
+          setLoading(false);
+          return;
+        }
 
-      const maxWidth = 1920;
-      const maxHeight = 1080;
-      let width = img.width;
-      let height = img.height;
+        const maxWidth = 1920;
+        const maxHeight = 1080;
+        let width = img.width;
+        let height = img.height;
 
-      if (width > maxWidth) {
-        height = (maxWidth / width) * height;
-        width = maxWidth;
+        if (width > maxWidth) {
+          height = (maxWidth / width) * height;
+          width = maxWidth;
+        }
+
+        if (height > maxHeight) {
+          width = (maxHeight / height) * width;
+          height = maxHeight;
+        }
+
+      const MAX_CANVAS_DIMENSION = 5000; 
+        if (width > MAX_CANVAS_DIMENSION || height > MAX_CANVAS_DIMENSION) {
+          const scale = Math.min(
+            MAX_CANVAS_DIMENSION / width,
+            MAX_CANVAS_DIMENSION / height
+          );
+          width *= scale;
+          height *= scale;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressedDataURL = canvas.toDataURL("image/jpeg", quality / 100);
+        setCompressedImage(compressedDataURL);
+
+        const base64str = compressedDataURL.split(",")[1];
+        const byteSize = window.atob(base64str).length;
+        setCompressedSize(byteSize);
+      } catch (error) {
+        console.error("Compression failed:", error);
+        alert("Failed to compress the image. The image might be too large to process in the browser.");
+      } finally {
+        setLoading(false);
       }
+    };
 
-      if (height > maxHeight) {
-        width = (maxHeight / height) * width;
-        height = maxHeight;
-      }
-
-      canvas.width = width;
-      canvas.height = height;
-
-      ctx.drawImage(img, 0, 0, width, height);
-
-      const compressedDataURL = canvas.toDataURL("image/jpeg", quality / 100);
-      setCompressedImage(compressedDataURL);
-
-      const base64str = compressedDataURL.split(",")[1];
-      const byteSize = window.atob(base64str).length;
-      setCompressedSize(byteSize);
-
+    img.onerror = () => {
+      alert("Failed to load the image. The image might be corrupted or too large.");
       setLoading(false);
     };
 
@@ -168,7 +220,7 @@ function RouteComponent() {
           >
             {uploadLoading ? (
               <div className="flex flex-col items-center justify-center h-40">
-                <Loader2Icon className="animate-spin text-purple-500 mb-3" size={25} />
+                <Loader2Icon className="animate-spin text-purple-500 mb-3" size={40} />
                 <p className="text-purple-600 font-medium">Loading image...</p>
               </div>
             ) : !image ? (
@@ -179,7 +231,7 @@ function RouteComponent() {
                 <p className="font-medium text-gray-700">
                   Click to upload or drag and drop
                 </p>
-                <p className="text-sm text-gray-500 mt-1">JPG, PNG or WEBP</p>
+                <p className="text-sm text-gray-500 mt-1">JPG, PNG or WEBP (max 200MB)</p>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -320,7 +372,7 @@ function RouteComponent() {
           {!image && uploadLoading && (
             <div className="h-80 border rounded-lg flex items-center justify-center p-6">
               <div className="text-center text-purple-500">
-                <Loader2Icon className="animate-spin mx-auto mb-3" size={25} />
+                <Loader2Icon className="animate-spin mx-auto mb-3" size={48} />
                 <p>Loading your image...</p>
               </div>
             </div>
