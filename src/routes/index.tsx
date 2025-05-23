@@ -27,6 +27,16 @@ function App() {
       route: "/lorem-ipsum",
       icon: SolarIconSet.TextFieldFocus,
     },
+    {
+      title: "Word Counter",
+      route: "/word-counter",
+      icon: SolarIconSet.Document,
+    },
+    {
+      title: "Image Cropper",
+      route: "/image-cropper",
+      icon: SolarIconSet.Crop,
+    },
   ];
   return (
     <>
