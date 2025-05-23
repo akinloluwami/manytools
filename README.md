@@ -14,10 +14,10 @@
 | Lorem Ipsum Generator    | ✅     |
 | Video Trimmer            | ⏳     |
 | Image Cropper            | ⏳     |
+| Random FIle Creator      | ⏳     |
 | SVG Wave Generator       |        |
 | QR Code Generator        |        |
 | Privacy Policy Generator |        |
-| Random FIle Creator      |        |
 | Image Converter          |        |
 | Color Picker             |        |
 | Regex Tester             |        |
