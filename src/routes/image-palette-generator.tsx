@@ -1,10 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  PlusIcon,
-  X,
-  Loader2Icon,
-  ChevronDown,
-} from "lucide-react";
+import { PlusIcon, X, Loader2Icon, ChevronDown } from "lucide-react";
 import { useState, useCallback, useMemo } from "react";
 import { useDropzone } from "react-dropzone";
 import { AnimatePresence, motion } from "motion/react";
@@ -139,7 +134,7 @@ function RouteComponent() {
         </div>
       </Modal>
       <ContentLayout title="Image Palette Generator">
-        <div className="mt-20 flex gap-x-10">
+        <div className="flex gap-x-10">
           <div className="w-[60%]">
             <div
               {...getRootProps()}
