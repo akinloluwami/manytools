@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { PostHogProvider } from 'posthog-js/react'
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
@@ -31,7 +32,16 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <PostHogProvider
+        apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+        options={{
+          api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+          capture_exceptions: true,
+          debug: import.meta.env.MODE === 'development',
+        }}
+      >
+        <RouterProvider router={router} />
+      </PostHogProvider>
     </StrictMode>,
   )
 }

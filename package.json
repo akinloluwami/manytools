@@ -23,6 +23,7 @@
     "lucide-react": "^0.485.0",
     "motion": "^12.12.1",
     "nearest-color": "^0.4.4",
+    "posthog-js": "^1.246.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.8",
