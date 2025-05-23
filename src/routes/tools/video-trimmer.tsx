@@ -6,7 +6,7 @@ import { createFFmpeg, fetchFile, FFmpeg } from "@ffmpeg/ffmpeg"; // Import FFmp
 // Path to the FFmpeg core files in your public directory
 const ffmpegCorePath = "/ffmpeg-core.js"; // Adjust if you placed them elsewhere
 
-export const Route = createFileRoute("/video-trimmer")({
+export const Route = createFileRoute("/tools/video-trimmer")({
   component: RouteComponent,
 });
 
