@@ -1,5 +1,11 @@
 ## 🧰 ManyTools – Progress Tracker
 
+### Status Symbols
+
+- ✅ Completed
+- ⏳ In Progress
+- (empty) Not Started
+
 | Tool Name                | Status |
 | ------------------------ | ------ |
 | Word Counter             | ✅     |
@@ -8,6 +14,10 @@
 | Lorem Ipsum Generator    | ✅     |
 | Video Trimmer            | ⏳     |
 | Image Cropper            | ⏳     |
+| Random FIle Creator      | ⏳     |
+| SVG Wave Generator       |        |
+| QR Code Generator        |        |
+| Privacy Policy Generator |        |
 | Image Converter          |        |
 | Color Picker             |        |
 | Regex Tester             |        |

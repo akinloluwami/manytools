@@ -2,7 +2,7 @@ import ContentLayout from "@/components/shared/content-layout";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 
-export const Route = createFileRoute("/word-counter")({
+export const Route = createFileRoute("/tools/word-counter")({
   component: RouteComponent,
 });
 

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import ContentLayout from "@/components/shared/content-layout";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/image-cropper")({
+export const Route = createFileRoute("/tools/image-cropper")({
   component: RouteComponent,
 });
 
