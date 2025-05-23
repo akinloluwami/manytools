@@ -1,10 +1,10 @@
 import { useState } from "react";
-import ReactCrop, { type Crop, type PixelCrop } from "react-image-crop";
+import ReactCrop, { type Crop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import { Button } from "@/components/ui/button";
 import ContentLayout from "@/components/shared/content-layout";
 import { createFileRoute } from "@tanstack/react-router";
-import { Download, X, Loader2 } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 
 export const Route = createFileRoute("/(tools)/image-cropper")({
