@@ -11,11 +11,25 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as VideoTrimmerImport } from './routes/video-trimmer'
+import { Route as LoremIpsumImport } from './routes/lorem-ipsum'
 import { Route as ImagePaletteGeneratorImport } from './routes/image-palette-generator'
 import { Route as ImageCompressorImport } from './routes/image-compressor'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const VideoTrimmerRoute = VideoTrimmerImport.update({
+  id: '/video-trimmer',
+  path: '/video-trimmer',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LoremIpsumRoute = LoremIpsumImport.update({
+  id: '/lorem-ipsum',
+  path: '/lorem-ipsum',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const ImagePaletteGeneratorRoute = ImagePaletteGeneratorImport.update({
   id: '/image-palette-generator',
@@ -60,6 +74,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImagePaletteGeneratorImport
       parentRoute: typeof rootRoute
     }
+    '/lorem-ipsum': {
+      id: '/lorem-ipsum'
+      path: '/lorem-ipsum'
+      fullPath: '/lorem-ipsum'
+      preLoaderRoute: typeof LoremIpsumImport
+      parentRoute: typeof rootRoute
+    }
+    '/video-trimmer': {
+      id: '/video-trimmer'
+      path: '/video-trimmer'
+      fullPath: '/video-trimmer'
+      preLoaderRoute: typeof VideoTrimmerImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -69,12 +97,16 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/image-compressor': typeof ImageCompressorRoute
   '/image-palette-generator': typeof ImagePaletteGeneratorRoute
+  '/lorem-ipsum': typeof LoremIpsumRoute
+  '/video-trimmer': typeof VideoTrimmerRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/image-compressor': typeof ImageCompressorRoute
   '/image-palette-generator': typeof ImagePaletteGeneratorRoute
+  '/lorem-ipsum': typeof LoremIpsumRoute
+  '/video-trimmer': typeof VideoTrimmerRoute
 }
 
 export interface FileRoutesById {
@@ -82,14 +114,32 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/image-compressor': typeof ImageCompressorRoute
   '/image-palette-generator': typeof ImagePaletteGeneratorRoute
+  '/lorem-ipsum': typeof LoremIpsumRoute
+  '/video-trimmer': typeof VideoTrimmerRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/image-compressor' | '/image-palette-generator'
+  fullPaths:
+    | '/'
+    | '/image-compressor'
+    | '/image-palette-generator'
+    | '/lorem-ipsum'
+    | '/video-trimmer'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/image-compressor' | '/image-palette-generator'
-  id: '__root__' | '/' | '/image-compressor' | '/image-palette-generator'
+  to:
+    | '/'
+    | '/image-compressor'
+    | '/image-palette-generator'
+    | '/lorem-ipsum'
+    | '/video-trimmer'
+  id:
+    | '__root__'
+    | '/'
+    | '/image-compressor'
+    | '/image-palette-generator'
+    | '/lorem-ipsum'
+    | '/video-trimmer'
   fileRoutesById: FileRoutesById
 }
 
@@ -97,12 +147,16 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ImageCompressorRoute: typeof ImageCompressorRoute
   ImagePaletteGeneratorRoute: typeof ImagePaletteGeneratorRoute
+  LoremIpsumRoute: typeof LoremIpsumRoute
+  VideoTrimmerRoute: typeof VideoTrimmerRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ImageCompressorRoute: ImageCompressorRoute,
   ImagePaletteGeneratorRoute: ImagePaletteGeneratorRoute,
+  LoremIpsumRoute: LoremIpsumRoute,
+  VideoTrimmerRoute: VideoTrimmerRoute,
 }
 
 export const routeTree = rootRoute
@@ -117,7 +171,9 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/image-compressor",
-        "/image-palette-generator"
+        "/image-palette-generator",
+        "/lorem-ipsum",
+        "/video-trimmer"
       ]
     },
     "/": {
@@ -128,6 +184,12 @@ export const routeTree = rootRoute
     },
     "/image-palette-generator": {
       "filePath": "image-palette-generator.tsx"
+    },
+    "/lorem-ipsum": {
+      "filePath": "lorem-ipsum.tsx"
+    },
+    "/video-trimmer": {
+      "filePath": "video-trimmer.tsx"
     }
   }
 }
