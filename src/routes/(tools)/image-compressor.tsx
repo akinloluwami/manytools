@@ -10,7 +10,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import ContentLayout from "@/components/shared/content-layout";
 import { useDropzone } from "react-dropzone";
 
-export const Route = createFileRoute("/tools/image-compressor")({
+export const Route = createFileRoute("/(tools)/image-compressor")({
   component: RouteComponent,
   head: () => ({
     meta: [

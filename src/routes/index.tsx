@@ -1,5 +1,4 @@
 import { Input } from "@/components/modified-ui/input";
-import { Badge } from "@/components/ui/badge";
 import tools from "@/tools";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import * as SolarIconSet from "solar-icon-set";
