@@ -256,7 +256,7 @@ function RouteComponent() {
             </Button>
           )}
           {croppedImage && (
-            <Button onClick={downloadImage} className="w-full mt-2">
+            <Button onClick={downloadImage} className="w-full mt-4">
               Download
             </Button>
           )}
