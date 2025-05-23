@@ -35,13 +35,13 @@ function RouteComponent() {
     if (!acceptedFiles) return;
     const file = acceptedFiles[0];
     if (!file) return;
-    
-    const MAX_FILE_SIZE = 200 * 1024 * 1024; 
+
+    const MAX_FILE_SIZE = 200 * 1024 * 1024;
     if (file.size > MAX_FILE_SIZE) {
       alert("File is too large. Please select an image smaller than 200MB.");
       return;
     }
-    
+
     setOriginalSize(file.size);
     setUploadLoading(true);
 
@@ -73,7 +73,6 @@ function RouteComponent() {
       alert("Please select an image file");
       return;
     }
-    
 
     const MAX_FILE_SIZE = 200 * 1024 * 1024;
     if (file.size > MAX_FILE_SIZE) {
@@ -136,7 +135,7 @@ function RouteComponent() {
           height = maxHeight;
         }
 
-      const MAX_CANVAS_DIMENSION = 5000; 
+        const MAX_CANVAS_DIMENSION = 5000;
         if (width > MAX_CANVAS_DIMENSION || height > MAX_CANVAS_DIMENSION) {
           const scale = Math.min(
             MAX_CANVAS_DIMENSION / width,
@@ -159,14 +158,18 @@ function RouteComponent() {
         setCompressedSize(byteSize);
       } catch (error) {
         console.error("Compression failed:", error);
-        alert("Failed to compress the image. The image might be too large to process in the browser.");
+        alert(
+          "Failed to compress the image. The image might be too large to process in the browser."
+        );
       } finally {
         setLoading(false);
       }
     };
 
     img.onerror = () => {
-      alert("Failed to load the image. The image might be corrupted or too large.");
+      alert(
+        "Failed to load the image. The image might be corrupted or too large."
+      );
       setLoading(false);
     };
 
@@ -211,7 +214,7 @@ function RouteComponent() {
 
   return (
     <ContentLayout title="Image Compressor">
-      <div className="mt-10 flex flex-col lg:flex-row gap-10">
+      <div className="flex flex-col lg:flex-row gap-10">
         <div className="w-full lg:w-1/2">
           <div
             {...getRootProps()}
@@ -220,7 +223,10 @@ function RouteComponent() {
           >
             {uploadLoading ? (
               <div className="flex flex-col items-center justify-center h-40">
-                <Loader2Icon className="animate-spin text-purple-500 mb-3" size={40} />
+                <Loader2Icon
+                  className="animate-spin text-purple-500 mb-3"
+                  size={40}
+                />
                 <p className="text-purple-600 font-medium">Loading image...</p>
               </div>
             ) : !image ? (
@@ -231,7 +237,9 @@ function RouteComponent() {
                 <p className="font-medium text-gray-700">
                   Click to upload or drag and drop
                 </p>
-                <p className="text-sm text-gray-500 mt-1">JPG, PNG or WEBP (max 200MB)</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  JPG, PNG or WEBP (max 200MB)
+                </p>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -316,8 +324,13 @@ function RouteComponent() {
 
               {loading && !compressedImage && (
                 <div className="border rounded-lg p-8 flex flex-col items-center justify-center">
-                  <Loader2Icon className="animate-spin text-purple-500 mb-3" size={40} />
-                  <p className="text-purple-600 font-medium">Compressing your image...</p>
+                  <Loader2Icon
+                    className="animate-spin text-purple-500 mb-3"
+                    size={40}
+                  />
+                  <p className="text-purple-600 font-medium">
+                    Compressing your image...
+                  </p>
                 </div>
               )}
 
