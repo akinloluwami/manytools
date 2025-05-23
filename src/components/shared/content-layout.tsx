@@ -10,7 +10,7 @@ interface Props {
 const ContentLayout = (props: Props) => {
   return (
     <div className="p-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-x-6">
           <Link to="/" className="p-2 hover:bg-gray-100 rounded-full">
             <ArrowLeft size={20} />
