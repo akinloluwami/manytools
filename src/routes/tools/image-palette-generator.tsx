@@ -11,7 +11,7 @@ import { getLuminosity } from "@/utils/get-luminosity";
 import { Tooltip } from "react-tooltip";
 import ContentLayout from "@/components/shared/content-layout";
 
-export const Route = createFileRoute("/image-palette-generator")({
+export const Route = createFileRoute("/tools/image-palette-generator")({
   component: RouteComponent,
   head: () => ({
     meta: [

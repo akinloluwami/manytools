@@ -7,7 +7,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Download, X, Loader2 } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 
-export const Route = createFileRoute("/image-cropper")({
+export const Route = createFileRoute("/tools/image-cropper")({
   component: RouteComponent,
 });
 
