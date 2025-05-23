@@ -11,13 +11,21 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as WordCounterImport } from './routes/word-counter'
 import { Route as VideoTrimmerImport } from './routes/video-trimmer'
 import { Route as LoremIpsumImport } from './routes/lorem-ipsum'
 import { Route as ImagePaletteGeneratorImport } from './routes/image-palette-generator'
+import { Route as ImageCropperImport } from './routes/image-cropper'
 import { Route as ImageCompressorImport } from './routes/image-compressor'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const WordCounterRoute = WordCounterImport.update({
+  id: '/word-counter',
+  path: '/word-counter',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const VideoTrimmerRoute = VideoTrimmerImport.update({
   id: '/video-trimmer',
@@ -34,6 +42,12 @@ const LoremIpsumRoute = LoremIpsumImport.update({
 const ImagePaletteGeneratorRoute = ImagePaletteGeneratorImport.update({
   id: '/image-palette-generator',
   path: '/image-palette-generator',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ImageCropperRoute = ImageCropperImport.update({
+  id: '/image-cropper',
+  path: '/image-cropper',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -67,6 +81,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImageCompressorImport
       parentRoute: typeof rootRoute
     }
+    '/image-cropper': {
+      id: '/image-cropper'
+      path: '/image-cropper'
+      fullPath: '/image-cropper'
+      preLoaderRoute: typeof ImageCropperImport
+      parentRoute: typeof rootRoute
+    }
     '/image-palette-generator': {
       id: '/image-palette-generator'
       path: '/image-palette-generator'
@@ -88,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VideoTrimmerImport
       parentRoute: typeof rootRoute
     }
+    '/word-counter': {
+      id: '/word-counter'
+      path: '/word-counter'
+      fullPath: '/word-counter'
+      preLoaderRoute: typeof WordCounterImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -96,26 +124,32 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/image-compressor': typeof ImageCompressorRoute
+  '/image-cropper': typeof ImageCropperRoute
   '/image-palette-generator': typeof ImagePaletteGeneratorRoute
   '/lorem-ipsum': typeof LoremIpsumRoute
   '/video-trimmer': typeof VideoTrimmerRoute
+  '/word-counter': typeof WordCounterRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/image-compressor': typeof ImageCompressorRoute
+  '/image-cropper': typeof ImageCropperRoute
   '/image-palette-generator': typeof ImagePaletteGeneratorRoute
   '/lorem-ipsum': typeof LoremIpsumRoute
   '/video-trimmer': typeof VideoTrimmerRoute
+  '/word-counter': typeof WordCounterRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/image-compressor': typeof ImageCompressorRoute
+  '/image-cropper': typeof ImageCropperRoute
   '/image-palette-generator': typeof ImagePaletteGeneratorRoute
   '/lorem-ipsum': typeof LoremIpsumRoute
   '/video-trimmer': typeof VideoTrimmerRoute
+  '/word-counter': typeof WordCounterRoute
 }
 
 export interface FileRouteTypes {
@@ -123,40 +157,50 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/image-compressor'
+    | '/image-cropper'
     | '/image-palette-generator'
     | '/lorem-ipsum'
     | '/video-trimmer'
+    | '/word-counter'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/image-compressor'
+    | '/image-cropper'
     | '/image-palette-generator'
     | '/lorem-ipsum'
     | '/video-trimmer'
+    | '/word-counter'
   id:
     | '__root__'
     | '/'
     | '/image-compressor'
+    | '/image-cropper'
     | '/image-palette-generator'
     | '/lorem-ipsum'
     | '/video-trimmer'
+    | '/word-counter'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ImageCompressorRoute: typeof ImageCompressorRoute
+  ImageCropperRoute: typeof ImageCropperRoute
   ImagePaletteGeneratorRoute: typeof ImagePaletteGeneratorRoute
   LoremIpsumRoute: typeof LoremIpsumRoute
   VideoTrimmerRoute: typeof VideoTrimmerRoute
+  WordCounterRoute: typeof WordCounterRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ImageCompressorRoute: ImageCompressorRoute,
+  ImageCropperRoute: ImageCropperRoute,
   ImagePaletteGeneratorRoute: ImagePaletteGeneratorRoute,
   LoremIpsumRoute: LoremIpsumRoute,
   VideoTrimmerRoute: VideoTrimmerRoute,
+  WordCounterRoute: WordCounterRoute,
 }
 
 export const routeTree = rootRoute
@@ -171,9 +215,11 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/image-compressor",
+        "/image-cropper",
         "/image-palette-generator",
         "/lorem-ipsum",
-        "/video-trimmer"
+        "/video-trimmer",
+        "/word-counter"
       ]
     },
     "/": {
@@ -181,6 +227,9 @@ export const routeTree = rootRoute
     },
     "/image-compressor": {
       "filePath": "image-compressor.tsx"
+    },
+    "/image-cropper": {
+      "filePath": "image-cropper.tsx"
     },
     "/image-palette-generator": {
       "filePath": "image-palette-generator.tsx"
@@ -190,6 +239,9 @@ export const routeTree = rootRoute
     },
     "/video-trimmer": {
       "filePath": "video-trimmer.tsx"
+    },
+    "/word-counter": {
+      "filePath": "word-counter.tsx"
     }
   }
 }
