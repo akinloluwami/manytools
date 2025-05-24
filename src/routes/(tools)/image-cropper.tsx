@@ -6,6 +6,7 @@ import ContentLayout from "@/components/shared/content-layout";
 import { createFileRoute } from "@tanstack/react-router";
 import { X, Loader2 } from "lucide-react";
 import { useDropzone } from "react-dropzone";
+import { posthog } from "@/lib/posthog";
 
 export const Route = createFileRoute("/(tools)/image-cropper")({
   component: RouteComponent,
@@ -146,6 +147,7 @@ function RouteComponent() {
   const cropImage = async () => {
     try {
       const cropped = await getCroppedImg();
+      posthog.capture("image_cropper");
       setCroppedImage(cropped);
     } catch (error) {
       console.error("Crop failed:", error);
