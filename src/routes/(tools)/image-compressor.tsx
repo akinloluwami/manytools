@@ -9,6 +9,7 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 import ContentLayout from "@/components/shared/content-layout";
 import { useDropzone } from "react-dropzone";
+import posthog from "posthog-js";
 
 export const Route = createFileRoute("/(tools)/image-compressor")({
   component: RouteComponent,
@@ -165,6 +166,7 @@ function RouteComponent() {
         setLoading(false);
       }
     };
+    posthog.capture("image_compressor");
 
     img.onerror = () => {
       alert(
