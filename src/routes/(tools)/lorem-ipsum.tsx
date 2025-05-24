@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AnimatePresence, motion } from "motion/react";
+import { posthog } from "@/lib/posthog";
 
 export const Route = createFileRoute("/(tools)/lorem-ipsum")({
   component: RouteComponent,
@@ -29,6 +30,7 @@ function RouteComponent() {
   const [result, setResult] = useState<string>("");
 
   const generateLoremIpsum = () => {
+    posthog.capture("lorem_ipsum_generator");
     if (type === "paragraphs") {
       const ipsum = lorem.generateParagraphs(value);
       setResult(ipsum);
