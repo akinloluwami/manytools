@@ -18,6 +18,7 @@ import { Route as toolsLoremIpsumImport } from './routes/(tools)/lorem-ipsum'
 import { Route as toolsImagePaletteGeneratorImport } from './routes/(tools)/image-palette-generator'
 import { Route as toolsImageCropperImport } from './routes/(tools)/image-cropper'
 import { Route as toolsImageCompressorImport } from './routes/(tools)/image-compressor'
+import { Route as toolsDiffCheckerImport } from './routes/(tools)/diff-checker'
 import { Route as toolsColorPickerImport } from './routes/(tools)/color-picker'
 
 // Create/Update Routes
@@ -66,6 +67,12 @@ const toolsImageCompressorRoute = toolsImageCompressorImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const toolsDiffCheckerRoute = toolsDiffCheckerImport.update({
+  id: '/(tools)/diff-checker',
+  path: '/diff-checker',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const toolsColorPickerRoute = toolsColorPickerImport.update({
   id: '/(tools)/color-picker',
   path: '/color-picker',
@@ -88,6 +95,13 @@ declare module '@tanstack/react-router' {
       path: '/color-picker'
       fullPath: '/color-picker'
       preLoaderRoute: typeof toolsColorPickerImport
+      parentRoute: typeof rootRoute
+    }
+    '/(tools)/diff-checker': {
+      id: '/(tools)/diff-checker'
+      path: '/diff-checker'
+      fullPath: '/diff-checker'
+      preLoaderRoute: typeof toolsDiffCheckerImport
       parentRoute: typeof rootRoute
     }
     '/(tools)/image-compressor': {
@@ -140,6 +154,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/color-picker': typeof toolsColorPickerRoute
+  '/diff-checker': typeof toolsDiffCheckerRoute
   '/image-compressor': typeof toolsImageCompressorRoute
   '/image-cropper': typeof toolsImageCropperRoute
   '/image-palette-generator': typeof toolsImagePaletteGeneratorRoute
@@ -151,6 +166,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/color-picker': typeof toolsColorPickerRoute
+  '/diff-checker': typeof toolsDiffCheckerRoute
   '/image-compressor': typeof toolsImageCompressorRoute
   '/image-cropper': typeof toolsImageCropperRoute
   '/image-palette-generator': typeof toolsImagePaletteGeneratorRoute
@@ -163,6 +179,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/(tools)/color-picker': typeof toolsColorPickerRoute
+  '/(tools)/diff-checker': typeof toolsDiffCheckerRoute
   '/(tools)/image-compressor': typeof toolsImageCompressorRoute
   '/(tools)/image-cropper': typeof toolsImageCropperRoute
   '/(tools)/image-palette-generator': typeof toolsImagePaletteGeneratorRoute
@@ -176,6 +193,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/color-picker'
+    | '/diff-checker'
     | '/image-compressor'
     | '/image-cropper'
     | '/image-palette-generator'
@@ -186,6 +204,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/color-picker'
+    | '/diff-checker'
     | '/image-compressor'
     | '/image-cropper'
     | '/image-palette-generator'
@@ -196,6 +215,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/(tools)/color-picker'
+    | '/(tools)/diff-checker'
     | '/(tools)/image-compressor'
     | '/(tools)/image-cropper'
     | '/(tools)/image-palette-generator'
@@ -208,6 +228,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   toolsColorPickerRoute: typeof toolsColorPickerRoute
+  toolsDiffCheckerRoute: typeof toolsDiffCheckerRoute
   toolsImageCompressorRoute: typeof toolsImageCompressorRoute
   toolsImageCropperRoute: typeof toolsImageCropperRoute
   toolsImagePaletteGeneratorRoute: typeof toolsImagePaletteGeneratorRoute
@@ -219,6 +240,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   toolsColorPickerRoute: toolsColorPickerRoute,
+  toolsDiffCheckerRoute: toolsDiffCheckerRoute,
   toolsImageCompressorRoute: toolsImageCompressorRoute,
   toolsImageCropperRoute: toolsImageCropperRoute,
   toolsImagePaletteGeneratorRoute: toolsImagePaletteGeneratorRoute,
@@ -239,6 +261,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/(tools)/color-picker",
+        "/(tools)/diff-checker",
         "/(tools)/image-compressor",
         "/(tools)/image-cropper",
         "/(tools)/image-palette-generator",
@@ -252,6 +275,9 @@ export const routeTree = rootRoute
     },
     "/(tools)/color-picker": {
       "filePath": "(tools)/color-picker.tsx"
+    },
+    "/(tools)/diff-checker": {
+      "filePath": "(tools)/diff-checker.tsx"
     },
     "/(tools)/image-compressor": {
       "filePath": "(tools)/image-compressor.tsx"
