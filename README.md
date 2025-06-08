@@ -12,6 +12,8 @@
 | Image Palette Generator  | ✅     |
 | Image Compressor         | ✅     |
 | Lorem Ipsum Generator    | ✅     |
+| Text Diff Checker        | ✅     |
+| Base64 Encoder / Decoder |        |
 | Video Trimmer            | ⏳     |
 | Image Cropper            | ⏳     |
 | Random FIle Creator      | ⏳     |
@@ -24,9 +26,7 @@
 | CSV to JSON Converter    |        |
 | JSON to CSV Converter    |        |
 | Case Converter           |        |
-| Text Diff Checker        |        |
 | Markdown Previewer       |        |
-| Base64 Encoder / Decoder |        |
 | UUID Generator           |        |
 | JWT Decoder              |        |
 | Image Resizer            |        |
