@@ -18,7 +18,7 @@ export const Input: React.FC<InputProps> = ({
   return (
     <div
       className={classNames(
-        "border-2 flex items-center border-purple-100 rounded-lg px-4 py-1 focus-within:border-purple-500 focus:outline-none transition-all",
+        "border-2 flex items-center border-black/10 rounded-lg px-4 py-1 focus-within:border-black/90 focus:outline-none transition-all",
         containerclassName
       )}
     >
