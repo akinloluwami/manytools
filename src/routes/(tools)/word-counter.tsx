@@ -38,8 +38,8 @@ function RouteComponent() {
   return (
     <ContentLayout title="Word Counter">
       <div className="flex gap-10">
-        <div className="w-[70%] border border-purple-200 rounded-lg p-4 bg-purple-100">
-          <div className="flex gap-4 justify-between">
+        <div className="w-[70%] border border-purple-50/50 rounded-lg p-2 bg-purple-100">
+          <div className="flex gap-4 justify-between bg-white/40 border border-purple-300 rounded-lg p-3">
             <Stat label="Words" value={stats.wordCount} />
             <Stat label="Characters" value={stats.characters} />
             <Stat label="Special Characters" value={stats.specialChars} />
