@@ -34,7 +34,7 @@ export default [
   {
     title: "Lorem Ipsum Generator",
     route: "/lorem-ipsum",
-    icon: SolarIconSet.TextFieldFocus,
+    icon: SolarIconSet.TextField,
     category: "video",
   },
   {
@@ -54,5 +54,11 @@ export default [
     route: "/color-picker",
     icon: SolarIconSet.Pallete2,
     category: "image",
+  },
+  {
+    title: "Text Difference Checker",
+    route: "/diff-checker",
+    icon: SolarIconSet.TextFieldFocus,
+    category: "text",
   },
 ] satisfies Tool[];
