@@ -1,4 +1,5 @@
 import { Input } from "@/components/modified-ui/input";
+import { Badge } from "@/components/ui/badge";
 import tools from "@/tools";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import * as SolarIconSet from "solar-icon-set";
@@ -15,7 +16,7 @@ function App() {
           <div className="flex items-center justify-between">
             <p className="text-2xl font-bold text-gray-800">
               ManyTools{" "}
-              <span className="px-2 py-1 rounded-full bg-purple-500/10 text-purple-500 border border-purple-500 text-xs">
+              <span className="px-2 py-1 rounded-full bg-black/10 text-black/70 border border-black text-xs">
                 v0.1
               </span>{" "}
             </p>
@@ -43,7 +44,7 @@ function App() {
             <Link
               key={index}
               to={tool.route}
-              className="p-6 border relative border-purple-500/30 hover:bg-purple-50/50  hover:border-purple-500 transition-colors rounded-lg flex items-center justify-between flex-col gap-4"
+              className="p-6 border relative border-black/30 hover:bg-black/5  hover:border-black/20 transition-colors rounded-lg flex items-center justify-between flex-col gap-4"
             >
               <tool.icon size={40} iconStyle="LineDuotone" />
               <p className="text-gray-600 text-center font-semibold text-sm">
@@ -53,9 +54,9 @@ function App() {
             </Link>
           ))}
 
-          <button className="p-6 border bg-purple-500/10 border-purple-500 rounded-lg flex items-center justify-between flex-col cursor-pointer gap-4">
-            <SolarIconSet.WidgetAdd color="#C26BFF" size={40} />
-            <p className="text-purple-500 font-semibold text-sm">
+          <button className="p-6 border hover:bg-black/5 border-black/30 rounded-lg flex items-center justify-between flex-col cursor-pointer gap-4">
+            <SolarIconSet.WidgetAdd size={40} />
+            <p className="text-gray-600 font-semibold text-sm">
               Request New Tool
             </p>
           </button>
