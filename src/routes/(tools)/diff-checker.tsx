@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { diffLines } from "diff";
+import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/(tools)/diff-checker")({
   component: RouteComponent,
@@ -23,28 +24,25 @@ function RouteComponent() {
       <div className="flex gap-10">
         <div className="w-full space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div className="border border-purple-500 rounded-lg p-4 bg-purple-500/5">
-              <textarea
-                value={text1}
-                onChange={(e) => setText1(e.target.value)}
-                className="w-full h-[calc(100vh-400px)] border-none outline-none resize-none"
-                placeholder="Enter first text here..."
-              />
-            </div>
-            <div className="border border-purple-500 rounded-lg p-4 bg-purple-500/5">
-              <textarea
-                value={text2}
-                onChange={(e) => setText2(e.target.value)}
-                className="w-full h-[calc(100vh-400px)] border-none outline-none resize-none"
-                placeholder="Enter second text here..."
-              />
-            </div>
+            <Textarea
+              value={text1}
+              onChange={(e) => setText1(e.target.value)}
+              className="w-full h-[calc(100vh-400px)] resize-none"
+              placeholder="Enter first text here..."
+            />
+
+            <Textarea
+              value={text2}
+              onChange={(e) => setText2(e.target.value)}
+              className="w-full h-[calc(100vh-400px)] resize-none"
+              placeholder="Enter second text here..."
+            />
           </div>
           <Button onClick={compareTexts} className="w-full">
             Compare Texts
           </Button>
           {diffResult.length > 0 && (
-            <div className="border border-purple-500 rounded-lg p-4 bg-purple-500/5">
+            <div className="border border-black/50 rounded-lg p-4">
               <div className="prose max-w-none font-mono">
                 {diffResult.map((part, index) => {
                   const lines = part.value
