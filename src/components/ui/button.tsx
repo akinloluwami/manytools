@@ -14,7 +14,7 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <button
       className={classNames(
-        "bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg transition-all",
+        "bg-black text-white py-2 px-4 rounded-lg transition-all",
         className
       )}
       {...props}
