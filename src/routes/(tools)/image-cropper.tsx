@@ -165,16 +165,18 @@ function RouteComponent() {
     document.body.removeChild(link);
   };
 
+  const [selectedPresent, setSelectedPresent] = useState("");
+
   return (
     <ContentLayout title="Image Cropper">
-      <div className="flex gap-20">
-        <div className="w-[80%]">
+      <div className="flex gap-10">
+        <div className="w-[70%]">
           {!image && (
             <>
               <div className="w-full">
                 <div
                   {...getRootProps()}
-                  className="w-full border border-purple-500 border-dotted h-[70vh] rounded-2xl bg-purple-50 flex items-center justify-center cursor-pointer relative"
+                  className="w-full border border-black border-dotted h-[70vh] rounded-2xl bg-black/[2] flex items-center justify-center cursor-pointer relative"
                 >
                   {image && (
                     <button
@@ -189,10 +191,7 @@ function RouteComponent() {
                   )}
                   <input {...getInputProps()} />
                   {loading ? (
-                    <Loader2
-                      className="animate-spin text-purple-500"
-                      size={40}
-                    />
+                    <Loader2 className="animate-spin text-black" size={40} />
                   ) : image ? (
                     <img
                       src={image}
@@ -239,12 +238,17 @@ function RouteComponent() {
         <div className="w-[30%]">
           <div className="">
             <p>Presets</p>
-            <div className="grid grid-cols-3 gap-2 mt-2">
+            <div className="grid grid-cols-2 gap-2 mt-2">
               {presets.map((preset) => (
                 <Button
                   key={preset.name}
-                  onClick={() => setCrop(preset.crop)}
-                  className="size-20 text-xs text-center !bg-purple-100 !text-purple-500 border !border-purple-500 border-dotted hover:!bg-purple-200 flex items-center justify-center"
+                  onClick={() => {
+                    setSelectedPresent(preset.name);
+                    setCrop(preset.crop);
+                  }}
+                  className={`text-xs text-center border !border-black border-dotted flex items-center justify-center transition-all
+                    ${preset.name === selectedPresent ? "bg-black text-white" : "!bg-black/5 !text-black hover:!bg-black/10"}
+                    `}
                 >
                   {preset.name}
                 </Button>
