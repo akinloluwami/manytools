@@ -10,6 +10,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import ContentLayout from "@/components/shared/content-layout";
 import { useDropzone } from "react-dropzone";
 import posthog from "posthog-js";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/(tools)/image-compressor")({
   component: RouteComponent,
@@ -220,21 +221,21 @@ function RouteComponent() {
         <div className="w-full lg:w-1/2">
           <div
             {...getRootProps()}
-            className={`border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer ${!image ? "h-80" : "h-auto"} ${!image ? "hover:bg-gray-50" : ""}`}
+            className={`border border-dotted rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer ${!image ? "h-96" : "h-auto"} ${!image ? "hover:bg-gray-50" : ""}`}
             onClick={() => !image && fileInputRef.current?.click()}
           >
             {uploadLoading ? (
-              <div className="flex flex-col items-center justify-center h-40">
+              <div className="flex flex-col items-center justify-center h-96">
                 <Loader2Icon
-                  className="animate-spin text-purple-500 mb-3"
+                  className="animate-spin text-black mb-3"
                   size={40}
                 />
-                <p className="text-purple-600 font-medium">Loading image...</p>
+                <p className="text-black font-medium">Loading image...</p>
               </div>
             ) : !image ? (
               <>
                 <div className="bg-purple-50 p-4 rounded-full mb-4">
-                  <Upload className="text-purple-500" size={24} />
+                  <Upload className="text-black" size={24} />
                 </div>
                 <p className="font-medium text-gray-700">
                   Click to upload or drag and drop
@@ -305,32 +306,25 @@ function RouteComponent() {
                     className="w-full mt-1"
                   />
                 </div>
-                <button
-                  onClick={handleCompression}
-                  disabled={loading}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white p-3 rounded font-medium flex items-center justify-center gap-x-2"
-                >
+                <Button onClick={handleCompression} disabled={loading}>
                   {loading ? (
                     <>
                       <Loader2Icon className="animate-spin" size={20} />
                       <span>Compressing...</span>
                     </>
                   ) : (
-                    <>
-                      Compress Image
-                      <ImageIcon size={18} />
-                    </>
+                    <>Compress Image</>
                   )}
-                </button>
+                </Button>
               </div>
 
               {loading && !compressedImage && (
                 <div className="border rounded-lg p-8 flex flex-col items-center justify-center">
                   <Loader2Icon
-                    className="animate-spin text-purple-500 mb-3"
+                    className="animate-spin text-black mb-3"
                     size={40}
                   />
-                  <p className="text-purple-600 font-medium">
+                  <p className="text-black font-medium">
                     Compressing your image...
                   </p>
                 </div>
@@ -342,7 +336,7 @@ function RouteComponent() {
                     <p className="font-medium">Compressed Image</p>
                     <button
                       onClick={downloadCompressedImage}
-                      className="text-purple-600 flex items-center gap-x-1 text-sm hover:bg-purple-50 p-1 px-2 rounded"
+                      className="text-black flex items-center gap-x-1 text-sm bg-black/5 hover:bg-black/10 p-1 px-2 rounded"
                     >
                       <Download size={16} /> Download
                     </button>
@@ -363,9 +357,9 @@ function RouteComponent() {
                         {formatSize(compressedSize)}
                       </p>
                     </div>
-                    <div className="bg-purple-50 p-3 rounded">
-                      <p className="text-xs text-purple-600">Saved</p>
-                      <p className="font-medium text-purple-600">
+                    <div className="bg-green-100 p-3 rounded">
+                      <p className="text-xs text-green-500">Saved</p>
+                      <p className="font-medium text-green-500">
                         {calculateSavings()}
                       </p>
                     </div>
