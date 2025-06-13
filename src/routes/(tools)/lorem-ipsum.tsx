@@ -3,9 +3,9 @@ import ContentLayout from "@/components/shared/content-layout";
 import { LoremIpsum } from "lorem-ipsum";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { AnimatePresence, motion } from "motion/react";
 import { posthog } from "@/lib/posthog";
+import { Input } from "@/components/modified-ui/input";
 
 export const Route = createFileRoute("/(tools)/lorem-ipsum")({
   component: RouteComponent,
@@ -52,7 +52,7 @@ function RouteComponent() {
   return (
     <ContentLayout title="Lorem Ipsum Generator">
       <div className="flex gap-10">
-        <div className="w-[70%] border border-purple-500 rounded-lg p-4 bg-purple-500/5">
+        <div className="w-[70%] border border-black rounded-lg p-4">
           <textarea
             value={result}
             className="w-full h-[calc(100vh-400px)] border-none outline-none"
@@ -72,7 +72,7 @@ function RouteComponent() {
             <select
               value={type}
               onChange={(e) => setType(e.target.value as any)}
-              className="border-2 border-purple-100 focus:border-purple-500 rounded-lg px-4 py-2 outline-none w-[50%]"
+              className="border-2 border-black/10 focus:border-black/50 rounded-lg px-4 py-2 outline-none w-[50%]"
             >
               <option value="paragraphs">Paragraphs</option>
               <option value="sentences">Sentences</option>
@@ -88,7 +88,7 @@ function RouteComponent() {
               setCopied(true);
               setTimeout(() => setCopied(false), 1500);
             }}
-            className="w-full mt-2 !bg-purple-100 !text-purple-500 border !border-purple-500 border-dotted hover:!bg-purple-200 overflow-hidden relative h-10"
+            className="w-full mt-2 !bg-black/5 !text-black border-2 !border-black border-dotted hover:!bg-black/10 overflow-hidden relative h-10"
           >
             <AnimatePresence mode="wait">
               <motion.span
