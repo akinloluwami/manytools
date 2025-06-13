@@ -138,7 +138,7 @@ function RouteComponent() {
           <div className="w-[60%]">
             <div
               {...getRootProps()}
-              className="w-full border border-purple-500 border-dotted h-[70vh] rounded-2xl bg-purple-50 flex items-center justify-center cursor-pointer relative"
+              className="w-full border border-black border-dotted h-[70vh] rounded-2xl flex items-center justify-center cursor-pointer relative"
             >
               {image && (
                 <button
@@ -148,17 +148,14 @@ function RouteComponent() {
                     setColors([]);
                     setFullPalette([]);
                   }}
-                  className="absolute top-4 right-4"
+                  className="absolute top-4 right-4 size-7 flex items-center justify-center bg-white/50 hover:bg-white transition-colors rounded-full"
                 >
                   <X size={20} />
                 </button>
               )}
               <input {...getInputProps()} />
               {loading ? (
-                <Loader2Icon
-                  className="animate-spin text-purple-500"
-                  size={40}
-                />
+                <Loader2Icon className="animate-spin text-black" size={40} />
               ) : image ? (
                 <img
                   src={image}
@@ -179,13 +176,13 @@ function RouteComponent() {
                 <p className="text-2xl font-bold text-gray-800">Palette</p>
                 <div className="flex gap-x-[1px]">
                   <button
-                    className="bg-purple-500 text-white px-4 py-2 rounded-l-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-black text-white px-4 py-2 rounded-l-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={colors.length === 0}
                   >
                     Export palette
                   </button>
                   <button
-                    className="bg-purple-500 text-white px-2 py-2 rounded-r-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-black text-white px-2 py-2 rounded-r-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={colors.length === 0}
                   >
                     <ChevronDown />
@@ -218,7 +215,7 @@ function RouteComponent() {
                 </AnimatePresence>
                 {!!image && (
                   <button
-                    className="text-sm text-purple-500 flex items-center gap-x-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="text-sm bg-gray-100 hover:bg-gray-200 transition-colors w-fit p-2 rounded-md flex items-center gap-x-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                     onClick={addNewColor}
                     disabled={
                       colors.length >= fullPalette.length || loading || !image
