@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as toolsWordCounterImport } from './routes/(tools)/word-counter'
 import { Route as toolsVideoTrimmerImport } from './routes/(tools)/video-trimmer'
+import { Route as toolsUuidGeneratorImport } from './routes/(tools)/uuid-generator'
 import { Route as toolsLoremIpsumImport } from './routes/(tools)/lorem-ipsum'
 import { Route as toolsImagePaletteGeneratorImport } from './routes/(tools)/image-palette-generator'
 import { Route as toolsImageCropperImport } from './routes/(tools)/image-cropper'
@@ -38,6 +39,12 @@ const toolsWordCounterRoute = toolsWordCounterImport.update({
 const toolsVideoTrimmerRoute = toolsVideoTrimmerImport.update({
   id: '/(tools)/video-trimmer',
   path: '/video-trimmer',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const toolsUuidGeneratorRoute = toolsUuidGeneratorImport.update({
+  id: '/(tools)/uuid-generator',
+  path: '/uuid-generator',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -132,6 +139,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof toolsLoremIpsumImport
       parentRoute: typeof rootRoute
     }
+    '/(tools)/uuid-generator': {
+      id: '/(tools)/uuid-generator'
+      path: '/uuid-generator'
+      fullPath: '/uuid-generator'
+      preLoaderRoute: typeof toolsUuidGeneratorImport
+      parentRoute: typeof rootRoute
+    }
     '/(tools)/video-trimmer': {
       id: '/(tools)/video-trimmer'
       path: '/video-trimmer'
@@ -159,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/image-cropper': typeof toolsImageCropperRoute
   '/image-palette-generator': typeof toolsImagePaletteGeneratorRoute
   '/lorem-ipsum': typeof toolsLoremIpsumRoute
+  '/uuid-generator': typeof toolsUuidGeneratorRoute
   '/video-trimmer': typeof toolsVideoTrimmerRoute
   '/word-counter': typeof toolsWordCounterRoute
 }
@@ -171,6 +186,7 @@ export interface FileRoutesByTo {
   '/image-cropper': typeof toolsImageCropperRoute
   '/image-palette-generator': typeof toolsImagePaletteGeneratorRoute
   '/lorem-ipsum': typeof toolsLoremIpsumRoute
+  '/uuid-generator': typeof toolsUuidGeneratorRoute
   '/video-trimmer': typeof toolsVideoTrimmerRoute
   '/word-counter': typeof toolsWordCounterRoute
 }
@@ -184,6 +200,7 @@ export interface FileRoutesById {
   '/(tools)/image-cropper': typeof toolsImageCropperRoute
   '/(tools)/image-palette-generator': typeof toolsImagePaletteGeneratorRoute
   '/(tools)/lorem-ipsum': typeof toolsLoremIpsumRoute
+  '/(tools)/uuid-generator': typeof toolsUuidGeneratorRoute
   '/(tools)/video-trimmer': typeof toolsVideoTrimmerRoute
   '/(tools)/word-counter': typeof toolsWordCounterRoute
 }
@@ -198,6 +215,7 @@ export interface FileRouteTypes {
     | '/image-cropper'
     | '/image-palette-generator'
     | '/lorem-ipsum'
+    | '/uuid-generator'
     | '/video-trimmer'
     | '/word-counter'
   fileRoutesByTo: FileRoutesByTo
@@ -209,6 +227,7 @@ export interface FileRouteTypes {
     | '/image-cropper'
     | '/image-palette-generator'
     | '/lorem-ipsum'
+    | '/uuid-generator'
     | '/video-trimmer'
     | '/word-counter'
   id:
@@ -220,6 +239,7 @@ export interface FileRouteTypes {
     | '/(tools)/image-cropper'
     | '/(tools)/image-palette-generator'
     | '/(tools)/lorem-ipsum'
+    | '/(tools)/uuid-generator'
     | '/(tools)/video-trimmer'
     | '/(tools)/word-counter'
   fileRoutesById: FileRoutesById
@@ -233,6 +253,7 @@ export interface RootRouteChildren {
   toolsImageCropperRoute: typeof toolsImageCropperRoute
   toolsImagePaletteGeneratorRoute: typeof toolsImagePaletteGeneratorRoute
   toolsLoremIpsumRoute: typeof toolsLoremIpsumRoute
+  toolsUuidGeneratorRoute: typeof toolsUuidGeneratorRoute
   toolsVideoTrimmerRoute: typeof toolsVideoTrimmerRoute
   toolsWordCounterRoute: typeof toolsWordCounterRoute
 }
@@ -245,6 +266,7 @@ const rootRouteChildren: RootRouteChildren = {
   toolsImageCropperRoute: toolsImageCropperRoute,
   toolsImagePaletteGeneratorRoute: toolsImagePaletteGeneratorRoute,
   toolsLoremIpsumRoute: toolsLoremIpsumRoute,
+  toolsUuidGeneratorRoute: toolsUuidGeneratorRoute,
   toolsVideoTrimmerRoute: toolsVideoTrimmerRoute,
   toolsWordCounterRoute: toolsWordCounterRoute,
 }
@@ -266,6 +288,7 @@ export const routeTree = rootRoute
         "/(tools)/image-cropper",
         "/(tools)/image-palette-generator",
         "/(tools)/lorem-ipsum",
+        "/(tools)/uuid-generator",
         "/(tools)/video-trimmer",
         "/(tools)/word-counter"
       ]
@@ -290,6 +313,9 @@ export const routeTree = rootRoute
     },
     "/(tools)/lorem-ipsum": {
       "filePath": "(tools)/lorem-ipsum.tsx"
+    },
+    "/(tools)/uuid-generator": {
+      "filePath": "(tools)/uuid-generator.tsx"
     },
     "/(tools)/video-trimmer": {
       "filePath": "(tools)/video-trimmer.tsx"

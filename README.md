@@ -27,7 +27,7 @@
 | JSON to CSV Converter    |        |
 | Case Converter           |        |
 | Markdown Previewer       |        |
-| UUID Generator           |        |
+| UUID Generator           | ✅     |
 | JWT Decoder              |        |
 | Image Resizer            |        |
 | Gradient Generator       |        |
