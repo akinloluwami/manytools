@@ -61,4 +61,10 @@ export default [
     icon: SolarIconSet.TextFieldFocus,
     category: "text",
   },
+  {
+    title: "UUID Generator",
+    route: "/uuid-generator",
+    icon: SolarIconSet.Hashtag,
+    category: "dev",
+  },
 ] satisfies Tool[];
