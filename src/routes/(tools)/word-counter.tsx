@@ -1,4 +1,5 @@
 import ContentLayout from "@/components/shared/content-layout";
+import { Textarea } from "@/components/ui/textarea";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 
@@ -38,14 +39,23 @@ function RouteComponent() {
   return (
     <ContentLayout title="Word Counter">
       <div className="flex gap-10">
-        <div className="w-[70%] border border-purple-50/50 rounded-lg p-2 bg-purple-100">
-          <div className="flex gap-4 justify-between bg-white/40 border border-purple-300 rounded-lg p-3">
-            <Stat label="Words" value={stats.wordCount} />
-            <Stat label="Characters" value={stats.characters} />
-            <Stat label="Special Characters" value={stats.specialChars} />
-            <Stat label="Paragraphs" value={stats.paragraphs} />
+        <div className="w-[70%] border border-black rounded-xl">
+          <div className="flex gap-4 justify-between bg-black text-white  rounded-t-xl p-3">
+            <Stat label="Words" value={stats.wordCount.toLocaleString()} />
+            <Stat
+              label="Characters"
+              value={stats.characters.toLocaleString()}
+            />
+            <Stat
+              label="Special Characters"
+              value={stats.specialChars.toLocaleString()}
+            />
+            <Stat
+              label="Paragraphs"
+              value={stats.paragraphs.toLocaleString()}
+            />
           </div>
-          <textarea
+          <Textarea
             className="w-full h-[calc(100vh-400px)] mt-4 border-none outline-none"
             placeholder="Type or paste text here..."
             value={text}
@@ -74,9 +84,9 @@ function RouteComponent() {
   );
 }
 
-const Stat = ({ label, value }: { label: string; value: number }) => (
+const Stat = ({ label, value }: { label: string; value: string }) => (
   <div className="flex flex-col items-center">
     <p>{label}</p>
-    <p className="text-2xl font-bold">{value}</p>
+    <p className="text-2xl font-medium">{value}</p>
   </div>
 );
