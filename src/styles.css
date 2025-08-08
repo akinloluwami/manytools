@@ -8,3 +8,7 @@ body {
 button {
   cursor: pointer;
 }
+
+.box-resize {
+  resize: horizontal;
+}
