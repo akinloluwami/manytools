@@ -1,9 +1,16 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
+import { ResizableElement } from "../../components/resizable-element";
+import { CustomRange } from "@/components/custom-range";
 
-export const Route = createFileRoute('/(tools)/video-trimmer')({
+export const Route = createFileRoute("/(tools)/video-trimmer")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  return <div>Hello "/(tools)/video-trimmer"!</div>
+  return (
+    <div className="p-4">
+      <CustomRange />
+      <ResizableElement />
+    </div>
+  );
 }
