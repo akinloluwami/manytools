@@ -49,7 +49,7 @@ function RouteComponent() {
           ][];
           const hexColors = palette.map(
             ([r, g, b]) =>
-              `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
+              `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`,
           );
           setFullPalette(hexColors);
           setColors(hexColors.slice(0, 6));
@@ -67,7 +67,7 @@ function RouteComponent() {
         setLoading(false);
       };
     },
-    [loading]
+    [loading],
   );
 
   const onDrop = useCallback(
@@ -83,7 +83,7 @@ function RouteComponent() {
       };
       reader.readAsDataURL(file);
     },
-    [extractColors]
+    [extractColors],
   );
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -113,32 +113,36 @@ function RouteComponent() {
       <Modal
         isOpen={isModalOpen && !!selectedColor}
         onClose={() => setIsModalOpen(false)}
-        title="Detailed view"
+        title="Color Details"
       >
         <Tooltip id="tooltip" />
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {convertedColor &&
             Object.entries(convertedColor).map(([key, value]) => (
               <div
                 key={key}
-                className="w-full h-12 rounded-lg flex items-center justify-between px-4 uppercase"
+                className="w-full h-14 rounded-lg flex items-center justify-between px-5 uppercase font-medium cursor-pointer hover:scale-[1.02] transition-transform"
                 style={{ backgroundColor: selectedColor!, color: textColor }}
                 data-tooltip-id="tooltip"
-                data-tooltip-content="Copy"
+                data-tooltip-content="Click to copy"
+                onClick={() => {
+                  navigator.clipboard.writeText(value);
+                }}
               >
-                <p>{key}</p>
-                <p>{value}</p>
+                <p className="font-semibold">{key}</p>
+                <p className="font-mono">{value}</p>
               </div>
             ))}
         </div>
       </Modal>
       <ContentLayout title="Image Palette Generator">
-        <div className="flex gap-x-10">
-          <div className="w-[60%]">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Upload Section */}
+          <div className="w-full lg:w-[60%]">
             <div
               {...getRootProps()}
-              className="w-full border border-black border-dotted h-[70vh] rounded-2xl flex items-center justify-center cursor-pointer relative"
+              className="w-full border-2 border-dashed border-gray-300 h-[600px] rounded-xl flex items-center justify-center cursor-pointer relative hover:border-black hover:bg-gray-50/50 transition-all overflow-hidden"
             >
               {image && (
                 <button
@@ -148,80 +152,139 @@ function RouteComponent() {
                     setColors([]);
                     setFullPalette([]);
                   }}
-                  className="absolute top-4 right-4 size-7 flex items-center justify-center bg-white/50 hover:bg-white transition-colors rounded-full"
+                  className="absolute top-4 right-4 size-9 flex items-center justify-center bg-white hover:bg-red-50 text-red-600 transition-colors rounded-lg shadow-md z-10"
                 >
                   <X size={20} />
                 </button>
               )}
               <input {...getInputProps()} />
               {loading ? (
-                <Loader2Icon className="animate-spin text-black" size={40} />
+                <div className="flex flex-col items-center">
+                  <Loader2Icon
+                    className="animate-spin text-black mb-4"
+                    size={48}
+                  />
+                  <p className="text-black font-semibold text-lg">
+                    Extracting colors...
+                  </p>
+                  <p className="text-gray-500 text-sm mt-2">Please wait</p>
+                </div>
               ) : image ? (
                 <img
                   src={image}
                   alt="Uploaded Preview"
-                  className="max-h-full max-w-full rounded-2xl"
+                  className="max-h-full max-w-full object-contain rounded-xl"
                 />
               ) : (
-                <p className="text-gray-500 text-2xl">
-                  Drop an image here or click to upload
-                </p>
+                <div className="text-center px-6">
+                  <div className="bg-black p-5 rounded-full mb-6 inline-flex">
+                    <PlusIcon className="text-white" size={32} />
+                  </div>
+                  <p className="text-gray-900 font-semibold text-xl mb-2">
+                    Click to upload or drag and drop
+                  </p>
+                  <p className="text-gray-500">
+                    Upload an image to extract its color palette
+                  </p>
+                </div>
               )}
             </div>
           </div>
 
-          <div className="w-[40%]">
-            <div className="flex flex-col gap-y-4">
+          {/* Palette Section */}
+          <div className="w-full lg:w-[40%]">
+            <div className="flex flex-col gap-y-4 h-full">
               <div className="flex items-center justify-between">
-                <p className="text-2xl font-bold text-gray-800">Palette</p>
-                <div className="flex gap-x-[1px]">
-                  <button
-                    className="bg-black text-white px-4 py-2 rounded-l-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={colors.length === 0}
-                  >
-                    Export palette
-                  </button>
-                  <button
-                    className="bg-black text-white px-2 py-2 rounded-r-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={colors.length === 0}
-                  >
-                    <ChevronDown />
-                  </button>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    Color Palette
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {colors.length > 0
+                      ? `${colors.length} colors extracted`
+                      : "Upload an image to get started"}
+                  </p>
                 </div>
+                {colors.length > 0 && (
+                  <div className="flex gap-x-[1px]">
+                    <button
+                      className="bg-black text-white px-4 py-2.5 rounded-l-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition-colors font-medium text-sm"
+                      disabled={colors.length === 0}
+                    >
+                      Export
+                    </button>
+                    <button
+                      className="bg-black text-white px-2.5 py-2.5 rounded-r-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition-colors"
+                      disabled={colors.length === 0}
+                    >
+                      <ChevronDown size={18} />
+                    </button>
+                  </div>
+                )}
               </div>
 
-              <div className="flex flex-col gap-y-4">
+              <div className="flex flex-col gap-y-3 flex-1">
+                {colors.length === 0 && !loading && (
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl h-[545px] flex items-center justify-center">
+                    <div className="text-center text-gray-400 px-6">
+                      <div className="w-16 h-16 rounded-full bg-gray-100 mx-auto mb-4 flex items-center justify-center">
+                        <PlusIcon size={32} className="opacity-50" />
+                      </div>
+                      <p className="text-lg font-medium">No colors yet</p>
+                      <p className="text-sm mt-2">
+                        Upload an image to extract its color palette
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <AnimatePresence>
-                  {colors.map((color) => (
+                  {colors.map((color, index) => (
                     <motion.div
                       key={color}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.3 }}
-                      className="w-full h-12 bg-gray-100 rounded-lg flex items-center justify-between px-4"
+                      className="w-full h-16 bg-white border border-gray-200 rounded-lg flex items-center justify-between px-5 cursor-pointer hover:border-black hover:shadow-md transition-all group"
                       onClick={() => {
                         setIsModalOpen(true);
                         setSelectedColor(color);
                       }}
                     >
-                      <div
-                        className="w-8 h-8 rounded-full"
-                        style={{ backgroundColor: color }}
-                      ></div>
-                      <p className="text-gray-800">{color}</p>
+                      <div className="flex items-center gap-4">
+                        <div
+                          className="w-10 h-10 rounded-lg shadow-sm border border-gray-200 flex-shrink-0"
+                          style={{ backgroundColor: color }}
+                        ></div>
+                        <div>
+                          <p className="text-gray-900 font-mono font-semibold">
+                            {color.toUpperCase()}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Color {index + 1}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-xs text-gray-400 group-hover:text-gray-600 transition-colors">
+                        Click for details
+                      </div>
                     </motion.div>
                   ))}
                 </AnimatePresence>
-                {!!image && (
+
+                {!!image && colors.length > 0 && (
                   <button
-                    className="text-sm bg-gray-100 hover:bg-gray-200 transition-colors w-fit p-2 rounded-md flex items-center gap-x-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="text-sm bg-gray-100 hover:bg-gray-200 transition-colors w-full py-3 rounded-lg flex items-center justify-center gap-x-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed font-medium border border-gray-200"
                     onClick={addNewColor}
                     disabled={
                       colors.length >= fullPalette.length || loading || !image
                     }
                   >
-                    <PlusIcon size={16} /> Add Color
+                    <PlusIcon size={18} />
+                    {colors.length >= fullPalette.length
+                      ? "All colors extracted"
+                      : "Add Another Color"}
                   </button>
                 )}
               </div>
