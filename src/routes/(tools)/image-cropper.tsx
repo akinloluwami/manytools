@@ -54,6 +54,7 @@ function RouteComponent() {
   const [currentAspectRatio, setCurrentAspectRatio] = useState<
     number | undefined
   >(undefined);
+  const [originalFileName, setOriginalFileName] = useState<string>("image");
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -62,6 +63,10 @@ function RouteComponent() {
     onDrop: async (acceptedFiles) => {
       const file = acceptedFiles[0];
       if (!file) return;
+
+      // Extract filename without extension
+      const fileName = file.name.split(".").slice(0, -1).join(".") || "image";
+      setOriginalFileName(fileName);
 
       setLoading(true);
       const reader = new FileReader();
@@ -188,7 +193,7 @@ function RouteComponent() {
 
     const link = document.createElement("a");
     link.href = croppedImage;
-    link.download = "cropped-image.jpg";
+    link.download = `${originalFileName}-cropped.jpg`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
