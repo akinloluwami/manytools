@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactCrop, { type Crop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import { Button } from "@/components/ui/button";
@@ -50,6 +50,10 @@ function RouteComponent() {
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
   const [imgRef, setImgRef] = useState<HTMLImageElement | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isShiftPressed, setIsShiftPressed] = useState(false);
+  const [currentAspectRatio, setCurrentAspectRatio] = useState<
+    number | undefined
+  >(undefined);
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -74,6 +78,33 @@ function RouteComponent() {
   const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     setImgRef(e.currentTarget);
   };
+
+  // Track Shift key state
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Shift") {
+        setIsShiftPressed(true);
+        // Store current aspect ratio when shift is pressed
+        if (crop.width && crop.height) {
+          setCurrentAspectRatio(crop.width / crop.height);
+        }
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === "Shift") {
+        setIsShiftPressed(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [crop]);
 
   const applyCropPreset = (aspectRatio: number) => {
     if (!imgRef) return;
@@ -106,6 +137,7 @@ function RouteComponent() {
       width: cropWidth,
       height: cropHeight,
     });
+    setCurrentAspectRatio(aspectRatio);
   };
 
   const getCroppedImg = (): Promise<string> => {
@@ -209,8 +241,16 @@ function RouteComponent() {
             <div className="w-full overflow-hidden max-h-[70vh] flex items-center justify-center">
               <ReactCrop
                 crop={crop}
-                onChange={(c) => setCrop(c)}
+                onChange={(c) => {
+                  setCrop(c);
+                  // Update current aspect ratio as user drags
+                  if (c.width && c.height && !isShiftPressed) {
+                    setCurrentAspectRatio(c.width / c.height);
+                  }
+                }}
                 keepSelection
+                locked={false}
+                aspect={isShiftPressed ? currentAspectRatio : undefined}
                 className="rounded max-h-[70vh]"
               >
                 <img
@@ -269,6 +309,7 @@ function RouteComponent() {
                     onClick={() => {
                       setCroppedImage(null);
                       setSelectedPresent("");
+                      setCurrentAspectRatio(undefined);
                     }}
                     className="w-full !bg-white !text-black border border-black hover:!bg-black/5"
                   >
@@ -279,6 +320,7 @@ function RouteComponent() {
                       setImage(null);
                       setCroppedImage(null);
                       setSelectedPresent("");
+                      setCurrentAspectRatio(undefined);
                       setCrop({ unit: "%", x: 0, y: 0, width: 50, height: 50 });
                     }}
                     className="w-full !bg-white !text-black border border-black hover:!bg-black/5"
