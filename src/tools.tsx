@@ -44,6 +44,12 @@ export default [
     category: "text",
   },
   {
+    title: "Text Case Converter",
+    route: "/text-case-converter",
+    icon: SolarIconSet.TextBold,
+    category: "text",
+  },
+  {
     title: "Image Cropper",
     route: "/image-cropper",
     icon: SolarIconSet.Crop,
