@@ -16,63 +16,27 @@ function RouteComponent() {
   const presets = [
     {
       name: "Square",
-      crop: {
-        unit: "%" as const,
-        x: 0,
-        y: 0,
-        width: 50,
-        height: 50,
-      },
+      aspectRatio: 1,
     },
     {
       name: "Landscape",
-      crop: {
-        unit: "%" as const,
-        x: 0,
-        y: 0,
-        width: 100,
-        height: 50,
-      },
+      aspectRatio: 16 / 9,
     },
     {
       name: "Portrait",
-      crop: {
-        unit: "%" as const,
-        x: 0,
-        y: 0,
-        width: 50,
-        height: 100,
-      },
+      aspectRatio: 9 / 16,
     },
     {
       name: "Twitter Banner",
-      crop: {
-        unit: "px" as const,
-        x: 0,
-        y: 0,
-        width: 1500,
-        height: 500,
-      },
+      aspectRatio: 3 / 1,
     },
     {
       name: "Instagram Post",
-      crop: {
-        unit: "px" as const,
-        x: 0,
-        y: 0,
-        width: 1080,
-        height: 1080,
-      },
+      aspectRatio: 1,
     },
     {
       name: "Instagram Story",
-      crop: {
-        unit: "px" as const,
-        x: 0,
-        y: 0,
-        width: 1080,
-        height: 1920,
-      },
+      aspectRatio: 9 / 16,
     },
   ];
   const [image, setImage] = useState<string | null>(null);
@@ -111,6 +75,39 @@ function RouteComponent() {
     setImgRef(e.currentTarget);
   };
 
+  const applyCropPreset = (aspectRatio: number) => {
+    if (!imgRef) return;
+
+    const imageWidth = imgRef.width;
+    const imageHeight = imgRef.height;
+    const imageAspectRatio = imageWidth / imageHeight;
+
+    let cropWidth: number;
+    let cropHeight: number;
+
+    if (imageAspectRatio > aspectRatio) {
+      // Image is wider than the desired aspect ratio
+      cropHeight = imageHeight;
+      cropWidth = cropHeight * aspectRatio;
+    } else {
+      // Image is taller than the desired aspect ratio
+      cropWidth = imageWidth;
+      cropHeight = cropWidth / aspectRatio;
+    }
+
+    // Center the crop
+    const x = (imageWidth - cropWidth) / 2;
+    const y = (imageHeight - cropHeight) / 2;
+
+    setCrop({
+      unit: "px",
+      x,
+      y,
+      width: cropWidth,
+      height: cropHeight,
+    });
+  };
+
   const getCroppedImg = (): Promise<string> => {
     return new Promise((resolve, reject) => {
       if (!imgRef) return reject("Image not loaded");
@@ -133,7 +130,7 @@ function RouteComponent() {
         0,
         0,
         (crop.width || 0) * scaleX,
-        (crop.height || 0) * scaleY
+        (crop.height || 0) * scaleY,
       );
 
       canvas.toBlob((blob) => {
@@ -209,62 +206,88 @@ function RouteComponent() {
           )}
 
           {image && !croppedImage && (
-            <div className="w-full overflow-hidden">
+            <div className="w-full overflow-hidden max-h-[70vh] flex items-center justify-center">
               <ReactCrop
                 crop={crop}
                 onChange={(c) => setCrop(c)}
                 keepSelection
-                className="rounded"
+                className="rounded max-h-[70vh]"
               >
                 <img
                   src={image}
                   alt="Upload"
-                  className="w-full"
+                  className="max-h-[70vh] max-w-full object-contain"
                   onLoad={onImageLoad}
                 />
               </ReactCrop>
             </div>
           )}
           {croppedImage && (
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-4 max-h-[70vh]">
               <img
                 src={croppedImage}
                 alt="Cropped"
-                className="rounded shadow max-w-[800px] w-full"
+                className="rounded shadow max-h-[70vh] max-w-full object-contain"
               />
             </div>
           )}
         </div>
-        <div className="w-[30%]">
-          <div className="">
-            <p>Presets</p>
-            <div className="grid grid-cols-2 gap-2 mt-2">
-              {presets.map((preset) => (
-                <Button
-                  key={preset.name}
-                  onClick={() => {
-                    setSelectedPresent(preset.name);
-                    setCrop(preset.crop);
-                  }}
-                  className={`text-xs text-center border !border-black border-dotted flex items-center justify-center transition-all
-                    ${preset.name === selectedPresent ? "bg-black text-white" : "!bg-black/5 !text-black hover:!bg-black/10"}
-                    `}
-                >
-                  {preset.name}
-                </Button>
-              ))}
-            </div>
-          </div>
+        <div className="w-[30%] flex flex-col">
+          {image && (
+            <>
+              <div className="">
+                <p className="font-medium mb-2">Presets</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {presets.map((preset) => (
+                    <Button
+                      key={preset.name}
+                      onClick={() => {
+                        setSelectedPresent(preset.name);
+                        applyCropPreset(preset.aspectRatio);
+                      }}
+                      className={`text-xs text-center border !border-black border-dotted flex items-center justify-center transition-all h-auto py-2
+                        ${preset.name === selectedPresent ? "bg-black text-white" : "!bg-black/5 !text-black hover:!bg-black/10"}
+                        `}
+                    >
+                      {preset.name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
 
-          {image && !croppedImage && (
-            <Button onClick={cropImage} className="w-full mt-2">
-              Crop
-            </Button>
-          )}
-          {croppedImage && (
-            <Button onClick={downloadImage} className="w-full mt-4">
-              Download
-            </Button>
+              {!croppedImage && (
+                <Button onClick={cropImage} className="w-full mt-4">
+                  Crop Image
+                </Button>
+              )}
+              {croppedImage && (
+                <div className="flex flex-col gap-2 mt-4">
+                  <Button onClick={downloadImage} className="w-full">
+                    Download Image
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setCroppedImage(null);
+                      setSelectedPresent("");
+                    }}
+                    className="w-full !bg-white !text-black border border-black hover:!bg-black/5"
+                  >
+                    Crop Again
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setImage(null);
+                      setCroppedImage(null);
+                      setSelectedPresent("");
+                      setCrop({ unit: "%", x: 0, y: 0, width: 50, height: 50 });
+                    }}
+                    className="w-full !bg-white !text-black border border-black hover:!bg-black/5"
+                  >
+                    Upload New Image
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
