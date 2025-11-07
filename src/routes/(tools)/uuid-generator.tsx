@@ -2,7 +2,8 @@ import ContentLayout from "@/components/shared/content-layout";
 import { Button } from "@/components/ui/button";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Copy, RefreshCw, Download } from "lucide-react";
+import { RefreshCw } from "lucide-react";
+import { CopyButton, NumberInput, DownloadButton } from "@/components/shared";
 
 export const Route = createFileRoute("/(tools)/uuid-generator")({
   component: RouteComponent,
@@ -18,10 +19,8 @@ function generateUUID(): string {
 
 function RouteComponent() {
   const [currentUuid, setCurrentUuid] = useState<string>(generateUUID());
-  const [copiedFormat, setCopiedFormat] = useState<string | null>(null);
   const [downloadCount, setDownloadCount] = useState<number>(10);
   const [bulkUuids, setBulkUuids] = useState<string[]>([]);
-  const [copiedBulkIndex, setCopiedBulkIndex] = useState<number | null>(null);
 
   const generateNewUUID = () => {
     setCurrentUuid(generateUUID());
@@ -30,26 +29,6 @@ function RouteComponent() {
   const generateBulkUUIDs = () => {
     const uuids = Array.from({ length: downloadCount }, () => generateUUID());
     setBulkUuids(uuids);
-  };
-
-  const copyToClipboard = async (uuid: string, format: string) => {
-    try {
-      await navigator.clipboard.writeText(uuid);
-      setCopiedFormat(format);
-      setTimeout(() => setCopiedFormat(null), 2000);
-    } catch (err) {
-      console.error("Failed to copy: ", err);
-    }
-  };
-
-  const copyBulkUuid = async (uuid: string, index: number) => {
-    try {
-      await navigator.clipboard.writeText(uuid);
-      setCopiedBulkIndex(index);
-      setTimeout(() => setCopiedBulkIndex(null), 2000);
-    } catch (err) {
-      console.error("Failed to copy: ", err);
-    }
   };
 
   const downloadBulkUUIDs = () => {
@@ -104,19 +83,13 @@ function RouteComponent() {
                     </p>
                     <p className="font-mono text-sm">{value}</p>
                   </div>
-                  <Button
-                    onClick={() => copyToClipboard(value, format)}
-                    className={`ml-4 p-2 transition-colors ${
-                      copiedFormat === format
-                        ? "bg-green-600 hover:bg-green-700"
-                        : "bg-gray-600 hover:bg-gray-700"
-                    }`}
-                    title="Copy to clipboard"
-                  >
-                    <Copy size={16} />
-                  </Button>
+                  <CopyButton
+                    textToCopy={value}
+                    variant="icon"
+                    showLabel={false}
+                  />
                 </div>
-              )
+              ),
             )}
           </div>
         </div>
@@ -125,22 +98,16 @@ function RouteComponent() {
         <div className="border border-gray-200 rounded-xl p-6">
           <h3 className="text-lg font-semibold mb-4">Bulk Generation</h3>
           <div className="flex items-center gap-4 mb-4">
-            <div className="flex items-center gap-2">
-              <label htmlFor="count" className="text-sm font-medium">
-                Number of UUIDs:
-              </label>
-              <input
-                id="count"
-                type="number"
-                min="1"
-                max="1000"
-                value={downloadCount}
-                onChange={(e) =>
-                  setDownloadCount(Math.max(1, parseInt(e.target.value) || 1))
-                }
-                className="w-24 px-3 py-2 border border-gray-300 rounded-lg text-center"
-              />
-            </div>
+            <NumberInput
+              label="Number of UUIDs"
+              value={downloadCount}
+              onChange={(e) =>
+                setDownloadCount(Math.max(1, parseInt(e.target.value) || 1))
+              }
+              min={1}
+              max={1000}
+              className="w-32"
+            />
             <Button
               onClick={generateBulkUUIDs}
               className="flex items-center gap-2"
@@ -160,30 +127,20 @@ function RouteComponent() {
                       className="flex items-center justify-between p-2 bg-white rounded hover:bg-gray-50 transition-colors"
                     >
                       <p className="font-mono text-sm flex-1">{uuid}</p>
-                      <Button
-                        onClick={() => copyBulkUuid(uuid, index)}
-                        className={`ml-2 p-1 transition-colors ${
-                          copiedBulkIndex === index
-                            ? "bg-green-600 hover:bg-green-700"
-                            : "bg-gray-600 hover:bg-gray-700"
-                        }`}
-                        title="Copy to clipboard"
-                      >
-                        <Copy size={14} />
-                      </Button>
+                      <CopyButton
+                        textToCopy={uuid}
+                        variant="icon"
+                        showLabel={false}
+                      />
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="flex justify-center">
-                <Button
-                  onClick={downloadBulkUUIDs}
-                  className="flex items-center gap-2"
-                >
-                  <Download size={16} />
-                  Download {bulkUuids.length} UUIDs as TXT
-                </Button>
+                <DownloadButton onClick={downloadBulkUUIDs}>
+                  Download {bulkUuids.length} UUIDs
+                </DownloadButton>
               </div>
             </div>
           )}
