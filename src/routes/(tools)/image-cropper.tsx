@@ -4,9 +4,13 @@ import "react-image-crop/dist/ReactCrop.css";
 import { Button } from "@/components/ui/button";
 import ContentLayout from "@/components/shared/content-layout";
 import { createFileRoute } from "@tanstack/react-router";
-import { X, Loader2 } from "lucide-react";
-import { useDropzone } from "react-dropzone";
+import { X } from "lucide-react";
 import { posthog } from "@/lib/posthog";
+import {
+  FileDropZone,
+  PresetSelector,
+  DownloadButton,
+} from "@/components/shared";
 
 export const Route = createFileRoute("/(tools)/image-cropper")({
   component: RouteComponent,
@@ -56,29 +60,21 @@ function RouteComponent() {
   >(undefined);
   const [originalFileName, setOriginalFileName] = useState<string>("image");
 
-  const { getRootProps, getInputProps } = useDropzone({
-    accept: {
-      "image/*": [".jpeg", ".jpg", ".png", ".gif"],
-    },
-    onDrop: async (acceptedFiles) => {
-      const file = acceptedFiles[0];
-      if (!file) return;
+  const handleFileSelect = (file: File) => {
+    // Extract filename without extension
+    const fileName = file.name.split(".").slice(0, -1).join(".") || "image";
+    setOriginalFileName(fileName);
 
-      // Extract filename without extension
-      const fileName = file.name.split(".").slice(0, -1).join(".") || "image";
-      setOriginalFileName(fileName);
-
-      setLoading(true);
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImage(reader.result as string);
-        setCroppedImage(null);
-        setCrop({ unit: "%", x: 0, y: 0, width: 50, height: 50 });
-        setLoading(false);
-      };
-      reader.readAsDataURL(file);
-    },
-  });
+    setLoading(true);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImage(reader.result as string);
+      setCroppedImage(null);
+      setCrop({ unit: "%", x: 0, y: 0, width: 50, height: 50 });
+      setLoading(false);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     setImgRef(e.currentTarget);
@@ -206,40 +202,12 @@ function RouteComponent() {
       <div className="flex gap-10">
         <div className="w-[70%]">
           {!image && (
-            <>
-              <div className="w-full">
-                <div
-                  {...getRootProps()}
-                  className="w-full border border-black border-dotted h-[70vh] rounded-2xl bg-black/[2] flex items-center justify-center cursor-pointer relative"
-                >
-                  {image && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setImage(null);
-                      }}
-                      className="absolute top-4 right-4"
-                    >
-                      <X size={20} />
-                    </button>
-                  )}
-                  <input {...getInputProps()} />
-                  {loading ? (
-                    <Loader2 className="animate-spin text-black" size={40} />
-                  ) : image ? (
-                    <img
-                      src={image}
-                      alt="Uploaded Preview"
-                      className="max-h-full max-w-full rounded-2xl"
-                    />
-                  ) : (
-                    <p className="text-gray-500 text-xl text-center">
-                      Drop an image here or click to upload
-                    </p>
-                  )}
-                </div>
-              </div>
-            </>
+            <FileDropZone
+              onFileSelect={handleFileSelect}
+              accept={{ "image/*": [".jpeg", ".jpg", ".png", ".gif"] }}
+              loading={loading}
+              height="h-[70vh]"
+            />
           )}
 
           {image && !croppedImage && (
@@ -282,22 +250,27 @@ function RouteComponent() {
             <>
               <div className="">
                 <p className="font-medium mb-2">Presets</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {presets.map((preset) => (
-                    <Button
-                      key={preset.name}
-                      onClick={() => {
-                        setSelectedPresent(preset.name);
-                        applyCropPreset(preset.aspectRatio);
-                      }}
-                      className={`text-xs text-center border !border-black border-dotted flex items-center justify-center transition-all h-auto py-2
-                        ${preset.name === selectedPresent ? "bg-black text-white" : "!bg-black/5 !text-black hover:!bg-black/10"}
-                        `}
-                    >
-                      {preset.name}
-                    </Button>
-                  ))}
-                </div>
+                <PresetSelector
+                  presets={presets.map((p) => ({
+                    label: p.name,
+                    value: p.aspectRatio,
+                  }))}
+                  selected={
+                    selectedPresent
+                      ? presets.find((p) => p.name === selectedPresent)
+                          ?.aspectRatio
+                      : null
+                  }
+                  onSelect={(aspectRatio: number) => {
+                    const preset = presets.find(
+                      (p) => p.aspectRatio === aspectRatio,
+                    );
+                    if (preset) {
+                      setSelectedPresent(preset.name);
+                      applyCropPreset(aspectRatio);
+                    }
+                  }}
+                />
               </div>
 
               {!croppedImage && (
@@ -307,9 +280,9 @@ function RouteComponent() {
               )}
               {croppedImage && (
                 <div className="flex flex-col gap-2 mt-4">
-                  <Button onClick={downloadImage} className="w-full">
+                  <DownloadButton onClick={downloadImage} className="w-full">
                     Download Image
-                  </Button>
+                  </DownloadButton>
                   <Button
                     onClick={() => {
                       setCroppedImage(null);
