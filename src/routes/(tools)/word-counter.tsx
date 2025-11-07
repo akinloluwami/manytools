@@ -2,6 +2,7 @@ import ContentLayout from "@/components/shared/content-layout";
 import { Textarea } from "@/components/ui/textarea";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
+import { StatCard } from "@/components/shared";
 
 export const Route = createFileRoute("/(tools)/word-counter")({
   component: RouteComponent,
@@ -40,19 +41,30 @@ function RouteComponent() {
     <ContentLayout title="Word Counter">
       <div className="flex gap-10">
         <div className="w-[70%] border border-black rounded-xl">
-          <div className="flex gap-4 justify-between bg-black text-white  rounded-t-xl p-3">
-            <Stat label="Words" value={stats.wordCount.toLocaleString()} />
-            <Stat
+          <div className="flex gap-4 justify-between bg-black text-white rounded-t-xl p-3">
+            <StatCard
+              label="Words"
+              value={stats.wordCount.toLocaleString()}
+              vertical
+              className="!bg-transparent !border-0 !text-white"
+            />
+            <StatCard
               label="Characters"
               value={stats.characters.toLocaleString()}
+              vertical
+              className="!bg-transparent !border-0 !text-white"
             />
-            <Stat
+            <StatCard
               label="Special Characters"
               value={stats.specialChars.toLocaleString()}
+              vertical
+              className="!bg-transparent !border-0 !text-white"
             />
-            <Stat
+            <StatCard
               label="Paragraphs"
               value={stats.paragraphs.toLocaleString()}
+              vertical
+              className="!bg-transparent !border-0 !text-white"
             />
           </div>
           <Textarea
@@ -83,10 +95,3 @@ function RouteComponent() {
     </ContentLayout>
   );
 }
-
-const Stat = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex flex-col items-center">
-    <p>{label}</p>
-    <p className="text-2xl font-medium">{value}</p>
-  </div>
-);
