@@ -21,11 +21,11 @@
 | QR Code Generator        |        |
 | Privacy Policy Generator |        |
 | Image Converter          |        |
-| Color Picker             |        |
+| Color Picker             | ✅     |
 | Regex Tester             |        |
 | CSV to JSON Converter    |        |
 | JSON to CSV Converter    |        |
-| Case Converter           |        |
+| Case Converter           | ✅     |
 | Markdown Previewer       |        |
 | UUID Generator           | ✅     |
 | JWT Decoder              |        |
@@ -36,3 +36,9 @@
 | Meta Tag Generator       |        |
 | Open Graph Previewer     |        |
 | UTM Builder              |        |
+
+---
+
+## 🎨 Shared Components
+
+Reusable components in `src/components/shared/` for consistent UI across all tools. See the README in that folder.
