@@ -1,9 +1,8 @@
 import ContentLayout from "@/components/shared/content-layout";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Copy, Check } from "lucide-react";
+import { CopyButton } from "@/components/shared";
 
 export const Route = createFileRoute("/(tools)/text-case-converter")({
   component: RouteComponent,
@@ -23,7 +22,6 @@ type CaseType =
 
 function RouteComponent() {
   const [inputText, setInputText] = useState("");
-  const [copiedCase, setCopiedCase] = useState<CaseType | null>(null);
 
   const convertCase = (text: string, caseType: CaseType): string => {
     if (!text) return "";
@@ -112,13 +110,6 @@ function RouteComponent() {
     }
   };
 
-  const handleCopy = async (caseType: CaseType) => {
-    const textToCopy = convertCase(inputText, caseType);
-    await navigator.clipboard.writeText(textToCopy);
-    setCopiedCase(caseType);
-    setTimeout(() => setCopiedCase(null), 2000);
-  };
-
   const cases: { type: CaseType; label: string; example: string }[] = [
     { type: "uppercase", label: "UPPERCASE", example: "HELLO WORLD" },
     { type: "lowercase", label: "lowercase", example: "hello world" },
@@ -168,23 +159,11 @@ function RouteComponent() {
                       {convertCase(inputText || example, type) || example}
                     </p>
                   </div>
-                  <Button
-                    onClick={() => handleCopy(type)}
+                  <CopyButton
+                    textToCopy={convertCase(inputText, type)}
                     disabled={!inputText}
-                    className="py-1 px-3 text-sm min-w-[90px] flex items-center justify-center"
-                  >
-                    {copiedCase === type ? (
-                      <>
-                        <Check className="w-4 h-4 mr-1" />
-                        Copied
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-4 h-4 mr-1" />
-                        Copy
-                      </>
-                    )}
-                  </Button>
+                    size="sm"
+                  />
                 </div>
               </div>
             ))}
