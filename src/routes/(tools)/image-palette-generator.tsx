@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PlusIcon, X, Loader2Icon, ChevronDown } from "lucide-react";
+import { PlusIcon, X, ChevronDown } from "lucide-react";
 import { useState, useCallback, useMemo } from "react";
-import { useDropzone } from "react-dropzone";
 import { AnimatePresence, motion } from "motion/react";
 // @ts-ignore
 import ColorThief from "colorthief";
@@ -10,6 +9,12 @@ import { convertHexColorCode } from "@/utils/convert-hex-color-code";
 import { getLuminosity } from "@/utils/get-luminosity";
 import { Tooltip } from "react-tooltip";
 import ContentLayout from "@/components/shared/content-layout";
+import {
+  FileDropZone,
+  ColorCard,
+  EmptyState,
+  LoadingSpinner,
+} from "@/components/shared";
 
 export const Route = createFileRoute("/(tools)/image-palette-generator")({
   component: RouteComponent,
@@ -70,27 +75,15 @@ function RouteComponent() {
     [loading],
   );
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result as string;
-        setImage(result);
-        extractColors(result);
-      };
-      reader.readAsDataURL(file);
-    },
-    [extractColors],
-  );
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: { "image/*": [] },
-    multiple: false,
-  });
+  const handleFileSelect = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      setImage(result);
+      extractColors(result);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const addNewColor = () => {
     if (colors.length < fullPalette.length) {
@@ -140,14 +133,17 @@ function RouteComponent() {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Upload Section */}
           <div className="w-full lg:w-[60%]">
-            <div
-              {...getRootProps()}
-              className="w-full border-2 border-dashed border-gray-300 h-[600px] rounded-xl flex items-center justify-center cursor-pointer relative hover:border-black hover:bg-gray-50/50 transition-all overflow-hidden"
-            >
-              {image && (
+            {!image ? (
+              <FileDropZone
+                onFileSelect={handleFileSelect}
+                accept={{ "image/*": [] }}
+                loading={loading}
+                height="h-[600px]"
+              />
+            ) : (
+              <div className="w-full border-2 border-dashed border-gray-300 h-[600px] rounded-xl flex items-center justify-center relative overflow-hidden">
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
+                  onClick={() => {
                     setImage(null);
                     setColors([]);
                     setFullPalette([]);
@@ -156,39 +152,21 @@ function RouteComponent() {
                 >
                   <X size={20} />
                 </button>
-              )}
-              <input {...getInputProps()} />
-              {loading ? (
-                <div className="flex flex-col items-center">
-                  <Loader2Icon
-                    className="animate-spin text-black mb-4"
-                    size={48}
+                {loading ? (
+                  <LoadingSpinner
+                    size="lg"
+                    message="Extracting colors..."
+                    submessage="Please wait"
                   />
-                  <p className="text-black font-semibold text-lg">
-                    Extracting colors...
-                  </p>
-                  <p className="text-gray-500 text-sm mt-2">Please wait</p>
-                </div>
-              ) : image ? (
-                <img
-                  src={image}
-                  alt="Uploaded Preview"
-                  className="max-h-full max-w-full object-contain rounded-xl"
-                />
-              ) : (
-                <div className="text-center px-6">
-                  <div className="bg-black p-5 rounded-full mb-6 inline-flex">
-                    <PlusIcon className="text-white" size={32} />
-                  </div>
-                  <p className="text-gray-900 font-semibold text-xl mb-2">
-                    Click to upload or drag and drop
-                  </p>
-                  <p className="text-gray-500">
-                    Upload an image to extract its color palette
-                  </p>
-                </div>
-              )}
-            </div>
+                ) : (
+                  <img
+                    src={image}
+                    alt="Uploaded Preview"
+                    className="max-h-full max-w-full object-contain rounded-xl"
+                  />
+                )}
+              </div>
+            )}
           </div>
 
           {/* Palette Section */}
@@ -225,17 +203,12 @@ function RouteComponent() {
 
               <div className="flex flex-col gap-y-3 flex-1">
                 {colors.length === 0 && !loading && (
-                  <div className="border-2 border-dashed border-gray-300 rounded-xl h-[545px] flex items-center justify-center">
-                    <div className="text-center text-gray-400 px-6">
-                      <div className="w-16 h-16 rounded-full bg-gray-100 mx-auto mb-4 flex items-center justify-center">
-                        <PlusIcon size={32} className="opacity-50" />
-                      </div>
-                      <p className="text-lg font-medium">No colors yet</p>
-                      <p className="text-sm mt-2">
-                        Upload an image to extract its color palette
-                      </p>
-                    </div>
-                  </div>
+                  <EmptyState
+                    icon={<PlusIcon size={32} className="opacity-50" />}
+                    title="No colors yet"
+                    description="Upload an image to extract its color palette"
+                    className="border-2 border-dashed border-gray-300 rounded-xl h-[545px]"
+                  />
                 )}
 
                 <AnimatePresence>
@@ -246,29 +219,16 @@ function RouteComponent() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.3 }}
-                      className="w-full h-16 bg-white border border-gray-200 rounded-lg flex items-center justify-between px-5 cursor-pointer hover:border-black hover:shadow-md transition-all group"
-                      onClick={() => {
-                        setIsModalOpen(true);
-                        setSelectedColor(color);
-                      }}
                     >
-                      <div className="flex items-center gap-4">
-                        <div
-                          className="w-10 h-10 rounded-lg shadow-sm border border-gray-200 flex-shrink-0"
-                          style={{ backgroundColor: color }}
-                        ></div>
-                        <div>
-                          <p className="text-gray-900 font-mono font-semibold">
-                            {color.toUpperCase()}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Color {index + 1}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-xs text-gray-400 group-hover:text-gray-600 transition-colors">
-                        Click for details
-                      </div>
+                      <ColorCard
+                        color={color}
+                        showCopyButton={false}
+                        onClick={() => {
+                          setIsModalOpen(true);
+                          setSelectedColor(color);
+                        }}
+                        className="cursor-pointer hover:border-black hover:shadow-md transition-all h-16"
+                      />
                     </motion.div>
                   ))}
                 </AnimatePresence>
