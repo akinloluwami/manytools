@@ -3,9 +3,8 @@ import ContentLayout from "@/components/shared/content-layout";
 import { LoremIpsum } from "lorem-ipsum";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { AnimatePresence, motion } from "motion/react";
 import { posthog } from "@/lib/posthog";
-import { Input } from "@/components/modified-ui/input";
+import { NumberInput, Select, CopyButton } from "@/components/shared";
 
 export const Route = createFileRoute("/(tools)/lorem-ipsum")({
   component: RouteComponent,
@@ -25,7 +24,7 @@ function RouteComponent() {
 
   const [value, setValue] = useState(5);
   const [type, setType] = useState<"paragraphs" | "sentences" | "words">(
-    "paragraphs"
+    "paragraphs",
   );
   const [result, setResult] = useState<string>("");
 
@@ -47,8 +46,6 @@ function RouteComponent() {
     generateLoremIpsum();
   }, []);
 
-  const [copied, setCopied] = useState(false);
-
   return (
     <ContentLayout title="Lorem Ipsum Generator">
       <div className="flex gap-10">
@@ -61,7 +58,7 @@ function RouteComponent() {
         </div>
         <div className="w-[30%]">
           <div className="flex gap-2">
-            <Input
+            <NumberInput
               value={value}
               onChange={(e) => {
                 if (isNaN(Number(e.target.value))) return;
@@ -69,40 +66,21 @@ function RouteComponent() {
               }}
               className="w-[50%]"
             />
-            <select
+            <Select
+              options={[
+                { value: "paragraphs", label: "Paragraphs" },
+                { value: "sentences", label: "Sentences" },
+                { value: "words", label: "Words" },
+              ]}
               value={type}
               onChange={(e) => setType(e.target.value as any)}
-              className="border-2 border-black/10 focus:border-black/50 rounded-lg px-4 py-2 outline-none w-[50%]"
-            >
-              <option value="paragraphs">Paragraphs</option>
-              <option value="sentences">Sentences</option>
-              <option value="words">Words</option>
-            </select>
+              className="w-[50%]"
+            />
           </div>
           <Button onClick={generateLoremIpsum} className="w-full mt-2">
             Generate
           </Button>
-          <Button
-            onClick={() => {
-              navigator.clipboard.writeText(result);
-              setCopied(true);
-              setTimeout(() => setCopied(false), 1500);
-            }}
-            className="w-full mt-2 !bg-black/5 !text-black border-2 !border-black border-dotted hover:!bg-black/10 overflow-hidden relative h-10"
-          >
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={copied ? "copied" : "copy"}
-                initial={false}
-                animate={{ y: 0 }}
-                exit={{ y: -20 }}
-                transition={{ duration: 0.25 }}
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-              >
-                {copied ? "Copied!" : "Copy"}
-              </motion.span>
-            </AnimatePresence>
-          </Button>
+          <CopyButton textToCopy={result} className="w-full mt-2" />
         </div>
       </div>
     </ContentLayout>
