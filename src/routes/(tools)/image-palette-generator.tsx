@@ -18,13 +18,6 @@ import {
 
 export const Route = createFileRoute("/(tools)/image-palette-generator")({
   component: RouteComponent,
-  head: () => ({
-    meta: [
-      {
-        title: "Image Palette Generator - ManyTools",
-      },
-    ],
-  }),
 });
 
 function RouteComponent() {

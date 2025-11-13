@@ -15,13 +15,6 @@ import {
 
 export const Route = createFileRoute("/(tools)/image-compressor")({
   component: RouteComponent,
-  head: () => ({
-    meta: [
-      {
-        title: "Image Compressor - ManyTools",
-      },
-    ],
-  }),
 });
 
 function RouteComponent() {
