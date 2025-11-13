@@ -1,9 +1,10 @@
 {
-  "name": "manytools",
+  "name": "toolbaze",
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "vite --port 9011",
+    "start": "vite",
+    "dev": "vite --port 9011",
     "build": "vite build && tsc",
     "serve": "vite preview",
     "test": "vitest run"
