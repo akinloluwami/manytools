@@ -15,7 +15,7 @@ function App() {
         <div className="">
           <div className="flex items-center justify-between">
             <p className="text-2xl font-bold text-gray-800">
-              ManyTools{" "}
+              Toolbaze{" "}
               <span className="px-2 py-1 rounded-full bg-black/10 text-black/70 border border-black text-xs">
                 v0.1
               </span>{" "}
