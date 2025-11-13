@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "dev": "vite --port 9011",
+    "dev": "vite --port 9011 --host",
     "build": "vite build && tsc",
     "serve": "vite preview",
     "test": "vitest run"
