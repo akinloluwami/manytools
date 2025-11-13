@@ -73,4 +73,10 @@ export default [
     icon: SolarIconSet.Hashtag,
     category: "dev",
   },
+  {
+    title: "Unit Converter",
+    route: "/unit-converter",
+    icon: SolarIconSet.RefreshCircle,
+    category: "utility",
+  },
 ] satisfies Tool[];
