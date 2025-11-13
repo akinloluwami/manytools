@@ -1,6 +1,6 @@
 # Shared Components Documentation
 
-This directory contains reusable components that provide a unified design language across all tools in ManyTools.
+This directory contains reusable components that provide a unified design language across all tools in Toolbaze.
 
 ## Components Overview
 
