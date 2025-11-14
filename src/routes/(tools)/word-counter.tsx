@@ -39,9 +39,9 @@ function RouteComponent() {
 
   return (
     <ContentLayout title="Word Counter">
-      <div className="flex gap-10">
-        <div className="w-[70%] border border-black rounded-xl">
-          <div className="flex gap-4 justify-between bg-black text-white rounded-t-xl p-3">
+      <div className="flex flex-col lg:flex-row gap-10">
+        <div className="lg:w-[70%] border border-black rounded-xl">
+          <div className="flex flex-col lg:flex-row lg:gap-4 justify-between bg-black text-white rounded-t-xl p-3">
             <StatCard
               label="Words"
               value={stats.wordCount.toLocaleString()}
@@ -74,7 +74,7 @@ function RouteComponent() {
             onChange={(e) => setText(e.target.value)}
           />
         </div>
-        <div className="w-[30%]">
+        <div className="lg:w-[30%]">
           <p className="text-lg font-semibold">Top words</p>
           <div className="mt-4">
             <div className="flex font-medium w-full justify-between">
