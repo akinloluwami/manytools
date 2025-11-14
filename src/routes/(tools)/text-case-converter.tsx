@@ -129,8 +129,8 @@ function RouteComponent() {
 
   return (
     <ContentLayout title="Text Case Converter">
-      <div className="flex gap-6">
-        <div className="w-[50%] flex flex-col gap-4">
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="lg:w-[50%] flex flex-col gap-4">
           <div className="border border-black rounded-xl overflow-hidden">
             <div className="bg-black text-white p-3">
               <p className="font-medium">Input Text</p>
@@ -144,18 +144,18 @@ function RouteComponent() {
           </div>
         </div>
 
-        <div className="w-[50%] flex flex-col gap-3">
+        <div className="lg:w-[50%] flex flex-col gap-3">
           <p className="text-lg font-semibold">Select Case Type</p>
           <div className="grid gap-2">
             {cases.map(({ type, label, example }) => (
               <div
                 key={type}
-                className="border border-gray-300 rounded-lg p-4 hover:border-black transition-colors"
+                className="border border-gray-300 rounded-lg p-4 hover:border-black transition-colors overflow-hidden"
               >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex-1">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex-1 min-w-0 overflow-hidden">
                     <p className="font-semibold text-sm">{label}</p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-1 truncate overflow-hidden text-ellipsis whitespace-nowrap">
                       {convertCase(inputText || example, type) || example}
                     </p>
                   </div>
