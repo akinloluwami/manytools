@@ -199,19 +199,23 @@ function RouteComponent() {
 
   return (
     <ContentLayout title="Image Cropper">
-      <div className="flex gap-10">
-        <div className="w-[70%]">
+      <div
+        className={`flex flex-col lg:flex-row ${!image ? "justify-center items-center min-h-[80vh]" : "gap-4 lg:gap-10"}`}
+      >
+        <div
+          className={`${!image ? "w-full max-w-3xl px-4" : "w-full lg:w-[70%]"}`}
+        >
           {!image && (
             <FileDropZone
               onFileSelect={handleFileSelect}
               accept={{ "image/*": [".jpeg", ".jpg", ".png", ".gif"] }}
               loading={loading}
-              height="h-[70vh]"
+              height="h-[50vh] md:h-[70vh]"
             />
           )}
 
           {image && !croppedImage && (
-            <div className="w-full overflow-hidden max-h-[70vh] flex items-center justify-center">
+            <div className="w-full overflow-hidden max-h-[50vh] md:max-h-[70vh] flex items-center justify-center">
               <ReactCrop
                 crop={crop}
                 onChange={(c) => {
@@ -224,92 +228,86 @@ function RouteComponent() {
                 keepSelection
                 locked={false}
                 aspect={isShiftPressed ? currentAspectRatio : undefined}
-                className="rounded max-h-[70vh]"
+                className="rounded max-h-[50vh] md:max-h-[70vh]"
               >
                 <img
                   src={image}
                   alt="Upload"
-                  className="max-h-[70vh] max-w-full object-contain"
+                  className="max-h-[50vh] md:max-h-[70vh] max-w-full object-contain"
                   onLoad={onImageLoad}
                 />
               </ReactCrop>
             </div>
           )}
           {croppedImage && (
-            <div className="flex flex-col items-center gap-4 max-h-[70vh]">
+            <div className="flex flex-col items-center gap-4 max-h-[50vh] md:max-h-[70vh]">
               <img
                 src={croppedImage}
                 alt="Cropped"
-                className="rounded shadow max-h-[70vh] max-w-full object-contain"
+                className="rounded shadow max-h-[50vh] md:max-h-[70vh] max-w-full object-contain"
               />
             </div>
           )}
         </div>
-        <div className="w-[30%] flex flex-col">
-          {image && (
-            <>
-              <div className="">
-                <p className="font-medium mb-2">Presets</p>
-                <PresetSelector
-                  presets={presets.map((p) => ({
-                    label: p.name,
-                    value: p.aspectRatio,
-                  }))}
-                  selected={
-                    selectedPresent
-                      ? presets.find((p) => p.name === selectedPresent)
-                          ?.aspectRatio
-                      : null
+        {image && (
+          <div className="w-full lg:w-[30%] flex flex-col mt-4 lg:mt-0">
+            <div className="">
+              <p className="font-medium mb-2">Presets</p>
+              <PresetSelector
+                presets={presets.map((p) => ({
+                  label: p.name,
+                  value: p.name,
+                }))}
+                selected={selectedPresent}
+                onSelect={(presetName: string) => {
+                  const preset = presets.find((p) => p.name === presetName);
+                  if (preset) {
+                    setSelectedPresent(preset.name);
+                    applyCropPreset(preset.aspectRatio);
                   }
-                  onSelect={(aspectRatio: number) => {
-                    const preset = presets.find(
-                      (p) => p.aspectRatio === aspectRatio,
-                    );
-                    if (preset) {
-                      setSelectedPresent(preset.name);
-                      applyCropPreset(aspectRatio);
-                    }
-                  }}
-                />
-              </div>
+                }}
+              />
+            </div>
 
-              {!croppedImage && (
-                <Button onClick={cropImage} className="w-full mt-4">
-                  Crop Image
+            {!croppedImage && (
+              <Button onClick={cropImage} className="w-full mt-4">
+                Crop Image
+              </Button>
+            )}
+            {croppedImage && (
+              <div className="flex flex-col gap-2 mt-4">
+                <DownloadButton
+                  onClick={downloadImage}
+                  className="w-full justify-center"
+                >
+                  Download Image
+                </DownloadButton>
+                <Button
+                  onClick={() => {
+                    setCroppedImage(null);
+                    setSelectedPresent("");
+                    setCurrentAspectRatio(undefined);
+                  }}
+                  className="w-full !bg-white !text-black border border-black hover:!bg-black/5"
+                >
+                  Crop Again
                 </Button>
-              )}
-              {croppedImage && (
-                <div className="flex flex-col gap-2 mt-4">
-                  <DownloadButton onClick={downloadImage} className="w-full">
-                    Download Image
-                  </DownloadButton>
-                  <Button
-                    onClick={() => {
-                      setCroppedImage(null);
-                      setSelectedPresent("");
-                      setCurrentAspectRatio(undefined);
-                    }}
-                    className="w-full !bg-white !text-black border border-black hover:!bg-black/5"
-                  >
-                    Crop Again
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setImage(null);
-                      setCroppedImage(null);
-                      setSelectedPresent("");
-                      setCurrentAspectRatio(undefined);
-                      setCrop({ unit: "%", x: 0, y: 0, width: 50, height: 50 });
-                    }}
-                    className="w-full !bg-white !text-black border border-black hover:!bg-black/5"
-                  >
-                    Upload New Image
-                  </Button>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+                <Button
+                  onClick={() => {
+                    setImage(null);
+                    setCroppedImage(null);
+                    setSelectedPresent("");
+                    setCurrentAspectRatio(undefined);
+                    setCrop({ unit: "%", x: 0, y: 0, width: 50, height: 50 });
+                  }}
+                  className="w-full !bg-white !text-black border border-black hover:!bg-black/5"
+                >
+                  Upload New Image
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </ContentLayout>
   );
