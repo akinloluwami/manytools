@@ -19,7 +19,7 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toolName, setToolName] = useState("");
   const [toolDescription, setToolDescription] = useState("");
-  const [showToast, setShowToast] = useState(true);
+  const [showToast, setShowToast] = useState(false);
 
   const handleSubmitRequest = () => {
     posthog?.capture("tool-request", {
