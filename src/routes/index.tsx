@@ -2,6 +2,7 @@ import { Input } from "@/components/modified-ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Toast } from "@/components/ui/toast";
 import tools from "@/tools";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import * as SolarIconSet from "solar-icon-set";
@@ -18,6 +19,7 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toolName, setToolName] = useState("");
   const [toolDescription, setToolDescription] = useState("");
+  const [showToast, setShowToast] = useState(true);
 
   const handleSubmitRequest = () => {
     posthog?.capture("tool-request", {
@@ -29,6 +31,7 @@ function App() {
     setToolName("");
     setToolDescription("");
     setIsModalOpen(false);
+    setShowToast(true);
   };
 
   return (
@@ -148,6 +151,15 @@ function App() {
           </div>
         </div>
       </Modal>
+
+      {/* Success Toast */}
+      {showToast && (
+        <Toast
+          message="Thank you for your submission!"
+          type="success"
+          onClose={() => setShowToast(false)}
+        />
+      )}
     </>
   );
 }
