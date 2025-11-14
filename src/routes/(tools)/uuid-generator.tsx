@@ -97,7 +97,7 @@ function RouteComponent() {
         {/* Bulk Generation */}
         <div className="border border-gray-200 rounded-xl p-6">
           <h3 className="text-lg font-semibold mb-4">Bulk Generation</h3>
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 mb-4">
             <NumberInput
               label="Number of UUIDs"
               value={downloadCount}
@@ -106,11 +106,11 @@ function RouteComponent() {
               }
               min={1}
               max={1000}
-              className="w-32"
+              className="w-full sm:w-32"
             />
             <Button
               onClick={generateBulkUUIDs}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 w-full sm:w-auto justify-center"
             >
               <RefreshCw size={16} />
               Generate
@@ -124,9 +124,11 @@ function RouteComponent() {
                   {bulkUuids.map((uuid, index) => (
                     <div
                       key={`${uuid}-${index}`}
-                      className="flex items-center justify-between p-2 bg-white rounded hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-2 p-2 bg-white rounded hover:bg-gray-50 transition-colors"
                     >
-                      <p className="font-mono text-sm flex-1">{uuid}</p>
+                      <p className="font-mono text-xs sm:text-sm flex-1 truncate">
+                        {uuid}
+                      </p>
                       <CopyButton
                         textToCopy={uuid}
                         variant="icon"
@@ -138,7 +140,10 @@ function RouteComponent() {
               </div>
 
               <div className="flex justify-center">
-                <DownloadButton onClick={downloadBulkUUIDs}>
+                <DownloadButton
+                  onClick={downloadBulkUUIDs}
+                  className="justify-center"
+                >
                   Download {bulkUuids.length} UUIDs
                 </DownloadButton>
               </div>
