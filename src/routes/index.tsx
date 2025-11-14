@@ -1,14 +1,36 @@
 import { Input } from "@/components/modified-ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import tools from "@/tools";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import * as SolarIconSet from "solar-icon-set";
+import Modal from "@/components/shared/modal";
+import { useState } from "react";
+import { usePostHog } from "posthog-js/react";
 
 export const Route = createFileRoute("/")({
   component: App,
 });
 
 function App() {
+  const posthog = usePostHog();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [toolName, setToolName] = useState("");
+  const [toolDescription, setToolDescription] = useState("");
+
+  const handleSubmitRequest = () => {
+    posthog?.capture("tool-request", {
+      tool_name: toolName,
+      tool_description: toolDescription,
+      timestamp: new Date().toISOString(),
+    });
+
+    setToolName("");
+    setToolDescription("");
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <header className="flex sticky top-0 left-0 justify-between items-center gap-4 p-3 py-4 bg-white/60 backdrop-blur-md border-b border-purple-500/20 z-10">
@@ -66,7 +88,10 @@ function App() {
             ),
           )}
 
-          <button className="p-6 border hover:bg-black/5 border-black/30 rounded-lg flex items-center justify-between flex-col cursor-pointer gap-4">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="p-6 border hover:bg-black/5 border-black/30 rounded-lg flex items-center justify-between flex-col cursor-pointer gap-4"
+          >
             <SolarIconSet.WidgetAdd size={40} />
             <p className="text-gray-600 font-semibold text-sm">
               Request New Tool
@@ -74,6 +99,55 @@ function App() {
           </button>
         </div>
       </div>
+
+      {/* Request Tool Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Request a New Tool"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Tool Name <span className="text-red-500">*</span>
+            </label>
+            <Input
+              value={toolName}
+              onChange={(e) => setToolName(e.target.value)}
+              placeholder="e.g., JSON Formatter, Base64 Encoder..."
+              className="w-full"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Description <span className="text-red-500">*</span>
+            </label>
+            <Textarea
+              value={toolDescription}
+              onChange={(e) => setToolDescription(e.target.value)}
+              placeholder="Describe what this tool should do and why it would be useful..."
+              className="w-full h-32 resize-none"
+            />
+          </div>
+
+          <div className="flex gap-3 justify-end mt-6">
+            <Button
+              onClick={() => setIsModalOpen(false)}
+              className="!bg-white !text-black border border-black hover:!bg-black/5"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmitRequest}
+              disabled={!toolName.trim() || !toolDescription.trim()}
+              className="disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Submit Request
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 }
