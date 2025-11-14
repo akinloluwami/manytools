@@ -48,15 +48,15 @@ function RouteComponent() {
 
   return (
     <ContentLayout title="Lorem Ipsum Generator">
-      <div className="flex gap-10">
-        <div className="w-[70%] border border-black rounded-lg p-4">
+      <div className="flex flex-col lg:flex-row gap-10">
+        <div className="lg:w-[70%] border border-black rounded-lg p-4">
           <textarea
             value={result}
             className="w-full h-[calc(100vh-400px)] border-none outline-none"
             readOnly
           ></textarea>
         </div>
-        <div className="w-[30%]">
+        <div className="lg:w-[30%]">
           <div className="flex gap-2">
             <NumberInput
               value={value}
@@ -64,7 +64,6 @@ function RouteComponent() {
                 if (isNaN(Number(e.target.value))) return;
                 setValue(Number(e.target.value));
               }}
-              className="w-[50%]"
             />
             <Select
               options={[
@@ -74,7 +73,6 @@ function RouteComponent() {
               ]}
               value={type}
               onChange={(e) => setType(e.target.value as any)}
-              className="w-[50%]"
             />
           </div>
           <Button onClick={generateLoremIpsum} className="w-full mt-2">
