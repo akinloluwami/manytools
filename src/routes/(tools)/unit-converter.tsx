@@ -274,13 +274,13 @@ function RouteComponent() {
     <ContentLayout title="Unit Converter">
       <div className="space-y-6">
         {/* Tabs */}
-        <div className="flex gap-2 border-b border-gray-200 pb-2">
+        <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => handleTabChange(tab.key)}
               className={cn(
-                "px-6 py-2.5 rounded-t-lg font-medium transition-all duration-200",
+                "px-4 sm:px-6 py-2 sm:py-2.5 rounded-t-lg font-medium transition-all duration-200 text-sm sm:text-base",
                 activeTab === tab.key
                   ? "bg-black text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200",
@@ -295,18 +295,18 @@ function RouteComponent() {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-2">From:</label>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <Input
                 type="number"
                 value={inputValue}
                 onChange={(e) => handleInputChange(e.target.value)}
                 placeholder="Enter value"
-                className="flex-1 text-lg py-6"
+                className="flex-1 text-base sm:text-lg py-4 sm:py-6"
               />
               <select
                 value={fromUnit}
                 onChange={(e) => handleFromUnitChange(e.target.value)}
-                className="px-4 py-2 border-2 border-gray-300 rounded-lg text-base font-medium focus:outline-none focus:border-black"
+                className="px-4 py-3 sm:py-2 border-2 border-gray-300 rounded-lg text-sm sm:text-base font-medium focus:outline-none focus:border-black w-full sm:w-auto"
               >
                 {Object.entries(currentUnits).map(([key, unit]) => (
                   <option key={key} value={key}>
@@ -320,18 +320,20 @@ function RouteComponent() {
           {/* Results Section */}
           {Object.keys(results).length > 0 && (
             <div className="space-y-3 mt-6">
-              <h3 className="text-lg font-semibold">Converted Values:</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <h3 className="text-base sm:text-lg font-semibold">
+                Converted Values:
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {Object.entries(results).map(([unitKey, value]) => (
                   <div
                     key={unitKey}
-                    className="p-4 bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-gray-300 transition-colors"
+                    className="p-3 sm:p-4 bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-gray-300 transition-colors"
                   >
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-gray-700">
+                    <div className="flex justify-between items-center gap-2">
+                      <span className="font-medium text-gray-700 text-sm sm:text-base truncate">
                         {currentUnits[unitKey].name}
                       </span>
-                      <span className="text-lg font-bold text-black">
+                      <span className="text-base sm:text-lg font-bold text-black break-all text-right">
                         {formatNumber(value)}
                       </span>
                     </div>
@@ -343,14 +345,14 @@ function RouteComponent() {
 
           {/* Empty State */}
           {Object.keys(results).length === 0 && inputValue && (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-gray-500 text-sm sm:text-base">
               Enter a value to see conversions
             </div>
           )}
 
           {!inputValue && (
             <div className="text-center py-8 text-gray-400">
-              <p className="text-lg">
+              <p className="text-base sm:text-lg px-4">
                 Enter a value above to convert between different units
               </p>
             </div>
