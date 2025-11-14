@@ -48,7 +48,7 @@ export const StatCard = ({
     return (
       <div
         className={cn(
-          "rounded-lg border flex flex-col items-center justify-center",
+          "rounded-lg border flex lg:flex-col items-center lg:justify-center gap-3",
           variantStyles[variant],
           sizeStyles[size].container,
           className,
