@@ -4,6 +4,7 @@ import iro from "@jaames/iro";
 import { useEffect, useRef, useState } from "react";
 import { convertHexColorCode } from "@/utils/convert-hex-color-code";
 import { getLuminosity } from "@/utils/get-luminosity";
+import { CopyButton } from "@/components/shared";
 
 export const Route = createFileRoute("/(tools)/color-picker")({
   component: RouteComponent,
@@ -17,12 +18,19 @@ function RouteComponent() {
   useEffect(() => {
     const container = colorPickerRef.current;
     if (container) {
-      // Wipe any previous render if it exists (StrictMode dev double-run)
       container.innerHTML = "";
+
+      // Determine size based on screen width
+      const getPickerWidth = () => {
+        if (window.innerWidth < 640)
+          return Math.min(window.innerWidth - 32, 280);
+        if (window.innerWidth < 1024) return 350;
+        return 500;
+      };
 
       // @ts-ignore
       const colorPicker = new iro.ColorPicker(container, {
-        width: 500,
+        width: getPickerWidth(),
         color: color,
       });
 
@@ -35,25 +43,33 @@ function RouteComponent() {
 
   return (
     <ContentLayout title="Color Picker">
-      <div className="flex gap-20 w-full">
-        <div ref={colorPickerRef} className="w-fit" />
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-20 w-full">
+        <div ref={colorPickerRef} className="w-fit mx-auto lg:mx-0" />
         <div className="w-full">
           <div
-            className="h-20 w-full rounded-lg flex items-center justify-center"
+            className="h-24 lg:h-20 w-full rounded-lg flex items-center justify-center mb-6"
             style={{
               backgroundColor: color,
               color: getLuminosity(color) > 0.5 ? "black" : "white",
             }}
           >
-            <p className="text-xl font-semibold">Name: {colorCode.name}</p>
+            <p className="text-lg lg:text-xl font-semibold px-4 text-center">
+              {colorCode.name}
+            </p>
           </div>
-          <div className="space-y-4 mt-7">
+          <div className="space-y-3">
             {Object.entries(colorCode)
               .filter(([key]) => key !== "name")
               .map(([key, value]) => (
-                <div key={key} className="flex items-center text-lg gap-4">
-                  <p className="uppercase">{key}</p>
-                  <p className="">{value}</p>
+                <div
+                  key={key}
+                  className="flex items-center justify-between gap-4 p-3 bg-gray-50 rounded-lg"
+                >
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <p className="uppercase font-medium text-sm w-16">{key}</p>
+                    <p className="text-sm font-mono truncate">{value}</p>
+                  </div>
+                  <CopyButton textToCopy={value as string} variant="icon" />
                 </div>
               ))}
           </div>
