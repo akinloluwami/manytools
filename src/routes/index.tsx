@@ -9,6 +9,7 @@ import * as SolarIconSet from "solar-icon-set";
 import Modal from "@/components/shared/modal";
 import { useState } from "react";
 import { usePostHog } from "posthog-js/react";
+import { SiGithub } from "react-icons/si";
 
 export const Route = createFileRoute("/")({
   component: App,
@@ -82,12 +83,16 @@ function App() {
           </div>
         </div>
         <div className="">
-          <div className="md:block hidden">
-            <Input
-              placeholder="Search Tools..."
-              leftIcon={<SolarIconSet.Magnifer />}
-            />
-          </div>
+          <a
+            href="https://github.com/akinloluwami/toolbaze"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => posthog?.capture("github_click")}
+            className="hidden md:flex items-center gap-3 px-4 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium text-sm"
+          >
+            <SiGithub size={18} />
+            Star on GitHub
+          </a>
         </div>
       </header>
       <div className="">
