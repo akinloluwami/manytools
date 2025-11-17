@@ -20,18 +20,45 @@ function App() {
   const [toolName, setToolName] = useState("");
   const [toolDescription, setToolDescription] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmitRequest = () => {
-    posthog?.capture("tool-request", {
-      tool_name: toolName,
-      tool_description: toolDescription,
-      timestamp: new Date().toISOString(),
-    });
+  const handleSubmitRequest = async () => {
+    setIsSubmitting(true);
 
-    setToolName("");
-    setToolDescription("");
-    setIsModalOpen(false);
-    setShowToast(true);
+    try {
+      // Submit to Formspree
+      const response = await fetch("https://formspree.io/f/xnnlrblb", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tool_name: toolName,
+          tool_description: toolDescription,
+          timestamp: new Date().toISOString(),
+        }),
+      });
+
+      if (response.ok) {
+        // Track in PostHog
+        posthog?.capture("tool-request", {
+          tool_name: toolName,
+          tool_description: toolDescription,
+          timestamp: new Date().toISOString(),
+        });
+
+        setToolName("");
+        setToolDescription("");
+        setIsModalOpen(false);
+        setShowToast(true);
+      } else {
+        console.error("Failed to submit tool request");
+      }
+    } catch (error) {
+      console.error("Error submitting tool request:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -137,16 +164,19 @@ function App() {
           <div className="flex gap-3 justify-end mt-6">
             <Button
               onClick={() => setIsModalOpen(false)}
+              disabled={isSubmitting}
               className="!bg-white !text-black border border-black hover:!bg-black/5"
             >
               Cancel
             </Button>
             <Button
               onClick={handleSubmitRequest}
-              disabled={!toolName.trim() || !toolDescription.trim()}
+              disabled={
+                !toolName.trim() || !toolDescription.trim() || isSubmitting
+              }
               className="disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Submit Request
+              {isSubmitting ? "Submitting..." : "Submit Request"}
             </Button>
           </div>
         </div>
