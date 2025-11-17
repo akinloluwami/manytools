@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PlusIcon, X, ChevronDown } from "lucide-react";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 // @ts-ignore
 import ColorThief from "colorthief";
@@ -20,6 +20,8 @@ export const Route = createFileRoute("/(tools)/image-palette-generator")({
   component: RouteComponent,
 });
 
+type ExportFormat = "json" | "css" | "scss" | "tailwind" | "array";
+
 function RouteComponent() {
   const [image, setImage] = useState<string | null>(null);
   const [colors, setColors] = useState<string[]>([]);
@@ -27,6 +29,8 @@ function RouteComponent() {
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const exportMenuRef = useRef<HTMLDivElement>(null);
 
   const extractColors = useCallback(
     (src: string) => {
@@ -93,6 +97,94 @@ function RouteComponent() {
 
   const textColor =
     getLuminosity(selectedColor || "") > 0.5 ? "black" : "white";
+
+  // Close export menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        exportMenuRef.current &&
+        !exportMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowExportMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const exportPalette = (format: ExportFormat) => {
+    let content = "";
+    let filename = "";
+    let mimeType = "text/plain";
+
+    switch (format) {
+      case "json":
+        content = JSON.stringify({ colors }, null, 2);
+        filename = "palette.json";
+        mimeType = "application/json";
+        break;
+
+      case "css":
+        content = `:root {
+${colors.map((color, i) => `  --color-${i + 1}: ${color};`).join("\n")}
+}`;
+        filename = "palette.css";
+        mimeType = "text/css";
+        break;
+
+      case "scss":
+        content = colors
+          .map((color, i) => `$color-${i + 1}: ${color};`)
+          .join("\n");
+        filename = "palette.scss";
+        mimeType = "text/plain";
+        break;
+
+      case "tailwind":
+        const tailwindColors = colors.reduce(
+          (acc, color, i) => {
+            acc[`palette-${i + 1}`] = color;
+            return acc;
+          },
+          {} as Record<string, string>,
+        );
+        content = `// Add to your tailwind.config.js
+module.exports = {
+  theme: {
+    extend: {
+      colors: ${JSON.stringify(tailwindColors, null, 8)}
+    }
+  }
+}`;
+        filename = "tailwind-colors.js";
+        mimeType = "text/javascript";
+        break;
+
+      case "array":
+        content = `const palette = ${JSON.stringify(colors, null, 2)};`;
+        filename = "palette.js";
+        mimeType = "text/javascript";
+        break;
+    }
+
+    // Create and download the file
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    setShowExportMenu(false);
+  };
+
+  const copyAllColors = () => {
+    navigator.clipboard.writeText(colors.join(", "));
+    setShowExportMenu(false);
+  };
 
   return (
     <>
@@ -177,19 +269,67 @@ function RouteComponent() {
                   </p>
                 </div>
                 {colors.length > 0 && (
-                  <div className="flex gap-x-[1px]">
+                  <div className="flex gap-x-px relative" ref={exportMenuRef}>
                     <button
                       className="bg-black text-white px-4 py-2.5 rounded-l-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition-colors font-medium text-sm"
                       disabled={colors.length === 0}
+                      onClick={copyAllColors}
                     >
-                      Export
+                      Copy All
                     </button>
                     <button
                       className="bg-black text-white px-2.5 py-2.5 rounded-r-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition-colors"
                       disabled={colors.length === 0}
+                      onClick={() => setShowExportMenu(!showExportMenu)}
                     >
                       <ChevronDown size={18} />
                     </button>
+
+                    {/* Export Menu Dropdown */}
+                    <AnimatePresence>
+                      {showExportMenu && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-20"
+                        >
+                          <div className="py-1">
+                            <button
+                              onClick={() => exportPalette("json")}
+                              className="w-full text-left px-4 py-2.5 hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
+                            >
+                              Export as JSON
+                            </button>
+                            <button
+                              onClick={() => exportPalette("css")}
+                              className="w-full text-left px-4 py-2.5 hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
+                            >
+                              Export as CSS
+                            </button>
+                            <button
+                              onClick={() => exportPalette("scss")}
+                              className="w-full text-left px-4 py-2.5 hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
+                            >
+                              Export as SCSS
+                            </button>
+                            <button
+                              onClick={() => exportPalette("tailwind")}
+                              className="w-full text-left px-4 py-2.5 hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
+                            >
+                              Export for Tailwind
+                            </button>
+                            <button
+                              onClick={() => exportPalette("array")}
+                              className="w-full text-left px-4 py-2.5 hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
+                            >
+                              Export as Array
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 )}
               </div>
