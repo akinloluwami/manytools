@@ -31,6 +31,7 @@
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.8",
     "react-easy-crop": "^5.4.2",
+    "react-icons": "^5.5.0",
     "react-image-crop": "^11.0.10",
     "react-range-slider-input": "^3.2.1",
     "react-tooltip": "^5.28.0",
